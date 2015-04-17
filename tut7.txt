@@ -1,0 +1,256 @@
+7 - Networking
+
+===============================================================================
+7 - Networking.
+===============================================================================
+
+Linux is known to be one of the best networking operating systems in the
+world, perhaps even THE best, unfortionally it's not the easiest OS to
+set up a good network in, but I hope that this section will make
+exclamation marks out of some question marks.
+
+-------------------------------------------------------------------------------
+
+The first thing you need to do networking is 2 computers and
+network cards attached with a crossed network cable, or connected via a hub,
+with normal network cable (doh?).
+
+The next step is to make sure the network cards work properly.
+
+Make sure you have the networking support compiled into the kernel, you need
+to have the following checked in the kernel (example is from the Linux 2.2.14
+kernel, using `make menuconfig`, you can read more about how you
+compile/recompile your kernel in /usr/doc/HOWTO/Kernel-HOWTO):
+
+General setup  --->
+	[*] Networking support
+Networking options  --->
+
+	[*] Kernel/User netlink socket
+	[*] Network firewalls
+	<*> Unix domain sockets
+	[*] TCP/IP networking
+	[*] IP: advanced router
+	[*] IP: firewalling
+	[*] IP: transparent proxy support
+	[*] IP: masquerading
+	[*] IP: ICMP masquerading
+	[*] IP: aliasing support
+	<*> IP: Reverse ARP
+	[*] IP: Allow large windows (not recommended if <16Mb of memory)
+Network device support  --->
+	[*] Network device support
+	Ethernet (10 or 100Mbit)  --->
+		[*] Ethernet (10 or 100Mbit)
+		(In here find your network card and check it.)
+Filesystems  --->
+	[*] /proc filesystem support
+
+Then you add this line in your /etc/rc.d/rc.local
+
+echo "1" > /proc/sys/net/ipv4/ip_forward () at boot time
+
+
+-------------------------------------------------------------------------------
+
+If you have more then one network card, you may wanna add one as Module and
+one hard compiled (*) into the kernel, so that the kernel knows that it's
+2 network cards.
+
+Then you need to name then eth0 and eth1, this you *may* have to do
+even if you only have 1 network card, but it's not likely.
+
+I have 2 network cards, one "3com 509 B" and one "3com 905"
+The first thing I need to do is to is to find the module name for
+the network cards.
+Go to /lib/modules/2.2.14/misc/ and do an "ls"
+(the 2.2.14/ dir will be named after whatever kernel version you have,
+`uname -r` to find out)
+In there I found a file called 3c59x.o (that's the one I compiled as module),
+then I set that as eth0, like this:
+I open the file /etc/conf.modules (or /etc/modules.conf depending on the
+kernel and  system) and add:
+
+alias eth0 3c59x
+
+Then I know the other card is a "3com 509 B" so I go to:
+/lib/modules/2.2.14/net/ and in there I find a 3c509.o, so I again
+add an alias in /etc/conf.modules:
+
+alias eth1 3c509
+
+Basicly, you will find the network cards you added from the kernel in either
+/lib/modules/2.2.14/net/ or /lib/modules/2.2.14/misc/, or say now
+that you had a Linux 2.2.15 kernel then it would be:
+/lib/modules/2.2.15/net/ and /lib/modules/2.2.15/misc/
+
+And remember to add the cardnames without the .o in the module name, as
+3c509.o will be named 3c509 as an alias in /etc/conf.modules.
+
+-------------------------------------------------------------------------------
+
+Now you wanna add the network card so it starts at boot time and get an IP.
+Now you must decide what network IP it should have
+(either 192.168.1.* or 10.0.0.* in this example I've used 10.0.0.*)
+Open or crate a file called: /etc/sysconfig/network-scripts/ifcfg-eth0
+(if it doesn't exist when you open it it will be created.)
+
+In this file type the following:
+
+ONBOOT=yes
+DEVICE=eth0
+IPADDR=10.0.0.1
+NETMASK=255.255.255.0
+NETWORK=10.0.0.0
+BROADCAST=10.255.255.255
+BOOTPROTO=none
+
+The save and quit.
+
+ifcfg-eth0 goes if this is your first network card, if it were your second
+network card on the same computer it would be ifcfg-eth1, and then the
+DEVICE variable would say DEVICE=eth1.
+
+-------------------------------------------------------------------------------
+
+After this you need to tell your computer what IP, network name and nick name
+it has. This you do in /etc/hosts.
+By default you should have this line in your /etc/hosts:
+
+127.0.0.1       localhost       localhost.localdomain
+
+Now you add your new hosts, the current computer and the other computer(s),
+here I have used the 10.0.0.* IP range.
+
+10.0.0.1        main.bogus.com	main
+10.0.0.2        sidekick.bogus.com	sidekick
+
+Note that there is a TAB separating each of the 3 fields (IP hostname nick).
+
+-------------------------------------------------------------------------------
+
+After that it's time to set up the forwarding and everything like that using
+ipchains.
+This you do by adding the following lines to your /etc/rc.d/rc.local
+
+/sbin/ipchains -P forward DENY
+/sbin/ipchains -A forward -i eth0 -j MASQ
+
+You may also wanna execute the lines since /etc/rc.d/rc.local only
+loads at boot time.
+
+-------------------------------------------------------------------------------
+
+At this time you may also wanna set up a caching nameserver on your system,
+Both to speed up your surfing and to get your LAN (Local Area Network)
+to interact in a proper way.
+
+In the following example I've used:
+
+bind-8.2.2P5-1mdk.i586.rpm
+and
+caching-nameserver-6.0-3mdk.noarch.rpm
+
+(A nameserver is depending on bind)
+
+So after you installed bind and a caching-nameserver this is what you wanna do,
+(everything in this example is based on the previously written network
+configurations):
+
+First you need to edit a file named /etc/named.conf, where in you add a "zone".
+The zones in this example to add, looks like this:
+
+zone "bogus.com" {
+        type master;
+        file "bogus.com";
+};
+
+zone "0.0.10.in-addr.arpa" {
+        type master;
+        file "10.0.0";
+};
+
+The first one is for the networked computers hostnames, and the second for
+there IP's.
+
+In this example I use 10.0.0.* as the network IP, but another common network
+IP is also 192.168.0.* .... those are the two most common/accepted ones.
+
+Then you save and quit that, to go and create the files bogus.com and 10.0.0,
+which you do in: /var/named/
+
+First we can create /var/named/bogus.com, and in there type the following:
+
+@       IN      SOA     ns.bogus.com. main.bogus.com.  (
+                                       2000020100 ; Serial
+                                       28800      ; Refresh
+                                       14400      ; Retry
+                                       3600000    ; Expire
+                                       86400 )    ; Minimum
+               IN      NS      localhost.
+      ;1       IN      PTR     localhost.
+localhost       A       127.0.0.1
+ns              A       10.0.0.1
+sidekick        A       10.0.0.2
+main            A       10.0.0.1
+mail            A       10.0.0.1
+
+(What comes before the Serial, 2000020100 is a date, 2000-02-01-00, so
+you can type that as your current date.)
+
+Then you save and quit that, and crate the file: /var/named/10.0.0, and in
+there you type this:
+
+@       IN      SOA     ns.bogus.com. main.bogus.com.  (
+                                      2000020100 ; Serial
+                                      28800      ; Refresh
+                                      14400      ; Retry
+                                      3600000    ; Expire
+                                      86400 )    ; Minimum
+                NS      ns.bogus.com.
+1               PTR     main.bogus.com.
+2               PTR     sidekick.bogus.com.
+
+Now it's almost time to start the nameserver, but first you wanna add the
+nameserver to your /etc/resolv.conf so you have any use of it.
+
+Open /etc/resolv.conf and at the top of it add:
+
+nameserver 10.0.0.1
+
+and leav the rest of the file entry's as they are if there is any, then
+save and quit that.
+
+And now it's time to start the nameserver.
+To be sure that everything works normally, do these commands:
+
+/usr/sbin/named
+/usr/sbin/ndc restart
+
+And then type `nslookup`, that should look like this:
+
+root:~# nslookup
+Default Server:  main.bogus.com
+Address:  10.0.0.1
+
+>
+
+If you get that, just type exit at the ">", and then add the following lines
+to /etc/rc.d/rc.local
+
+if
+ps aux | grep named | grep -v grep >/dev/null ; then
+echo >/dev/null
+else
+/usr/sbin/named
+/usr/sbin/ndc restart
+fi
+
+This will check if you have a named running, and if not, it will start it,
+note that this is not the 100% correct way to do it, but it's by far they
+most lazy way to do it, and it works.
+
+-------------------------------------------------------------------------------
+
+That was the basics of making a network at home and setting up a nameserver.
+I hope it's enough so that anyone can set up a little network at home.

@@ -1,0 +1,654 @@
+===============================================================================
+3 - Beginning techniques.
+===============================================================================
+
+First off I'm going to show how to count in bash or how to use your command
+line as a calculator, which is really easy and useful.
+
+alien:~$ echo $[ 4 * 2 ]
+8
+alien:~$
+
+or another example:
+
+alien:~$ echo $[ 10 + 5 ]
+15
+alien:~$
+
+Easy ? .... I think it is =)
+
+The internal calculator can also be used like this: 
+
+alien:~$ echo $(( 10 + 5 ))
+15
+alien:~$
+
+The second way of using the internal shell calculator is here just
+so you dont get confused if you see it used that way sometime.
+
+-------------------------------------------------------------------------------
+
+Now I'd like to show the *string comparing* with "if" statements,
+which can be a little hard at first contact, but as soon as you get
+familiar with it, it wont be any problems.
+So here's an example.
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+echo -n "enter a name: "
+read var1
+echo -n "enter another name: "
+read var2
+
+if [ "$var1" = "$var2" ]; then
+echo "The names are the same"
+else
+echo "The names were not the same"
+fi
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Note: "fi" is the ending of if, just like a "}" is the ending of a "{",
+       exit 0 terminates the script correctly and returns you to the prompt.
+
+       Another note is that instead of '=' you can use '-eq' to test if
+       2 expressions are equal, or '-eg' to check if 2 integers are equal, etc.
+
+       It should also be said that a variable say '$var' can be written
+       as this: ${var}, just so you know if you see it done that way
+       in some scripts, but here we will use the $var way.
+
+-------------------------------------------------------------------------------
+
+This example if executed looks like this:
+
+(Matching names)
+
+alien:~$ ./script1.sh
+enter a name: smurf
+enter another name: smurf
+The names are the same
+alien:~$
+
+(Non-matching names)
+
+alien:~$ ./script1.sh
+enter a name: smurf
+enter another name: guru
+The names were not the same
+alien:~$
+
+You can compare any 2 strings with this, as this *mid script example*:
+
+...
+if [ "$user" = "gnu" ]; then
+echo "Hello user gnu !"
+else
+echo "I don't know you."
+fi
+...
+
+This compares a variable with a static string which you can set to anything.
+You can also do this the other way around.
+
+...
+if [ "$user" != "gnu" ]; then
+echo "I don't know you."
+else
+echo "Hello user gnu !"
+fi
+...
+
+The '!=' means NOT-IS, in clear text if the 2 strings are not a match.
+As the above example in straight English:
+
+...
+if the variable don't match the word gnu, then
+say "I don't know you."
+in other cases
+say "Hello user gnu !"
+...
+
+If you think that a variable may not contain anything and you wanna avoid
+it showing you errors you can add an x as the first character to both
+the statements to test with if, like this to compare $one with -x:
+
+...
+if [ "x$one" = "x-x" ]; then
+echo "$one is -x"
+else
+echo "$one is not -x"
+fi
+...
+
+In plain english:
+
+...
+if (contents of $one) equals -x (supress error messages if any), then
+say (contents of $one) is -x
+in other cases
+say (contents of $one) is not -x
+...
+
+This previous way is actually quite old, and only a precaution, say this:
+
+...
+echo -n "enter a number: "
+read foo
+if [ $foo = 2 ]; then
+echo ok foo
+fi
+...
+
+Now, if you with this example dont enter any number there will be nothing
+there for if to compare with, not even a blank "", since we're not
+using quotes, but as this:
+
+...
+echo -n "enter a number: "
+read foo
+if [ x$foo = x2 ]; then
+echo ok foo
+fi
+...
+
+There will always be something, because if $foo is nothing there is
+still x.
+Just read acouple of times and you'll get it.
+
+You can also test if a variable contains anyting at all like this:
+
+...
+echo -n "enter a number: "
+read foo
+[ -n $foo ] &&
+echo ok foo
+...
+
+This uses the same options as the test command, so "-z" will return true
+if the variable is empty, "-z" will return true if the variable is not
+empty etc, it's ok if you dont understand this right now ....
+I've added this for the second time readers.
+
+You can also test if a command turns out as true, like this:
+
+...
+if echo "foo" >/dev/null; then
+echo "foo"
+else
+echo "bar"
+fi
+...
+
+Here if will check if foo echos to /dev/null, and if so, then it will
+print out "foo" and if foo didnt echo to /dev/null, it'll print out
+the word "bar"
+
+Anoter and perhaps *cleaner* way of doing the same is this:
+
+...
+if (echo "foo" >/dev/null); then
+echo "foo"
+else
+echo "bar"
+fi
+...
+
+It's the exact same thing but with parenthases around the command,
+it looks much cleaner ... and so the code is easyer to follow.
+
+You can also make if think 'if this is a match or that is a match', like
+if the variable is one of two options do one thing else do another.
+Like this:
+
+...
+if [ "$user" = "gnu" -o "$user" = "ung" ]; then
+echo "Hello $user !"
+else
+echo "I never heard of $user..."
+fi
+...
+
+The '-o' means OR in an if statement, so here is the example in plain english:
+
+...
+if the variable matches the word gnu or matches the word ung, then
+say Hello word ! (the word is the variable, now gnu or ung)
+in other cases
+say "I never heard of word... (the word is whatever the variable is set to)
+...
+
+-------------------------------------------------------------------------------
+
+Note: The quotes are needed in an if statement in case the strings or
+      variables it's suppse to compare is empty, since
+      if [ foo =  ]; then
+      would produse a syntax error, but
+      if [ "foo" = "" ]; then
+      would not.
+
+-------------------------------------------------------------------------------
+
+The '-o' can also be made with '] || [', so that:
+if [ "$user" = "gnu" -o "$user" = "ung" ]; then
+can also be expressed as this:
+if [ "$user" = "gnu" ] || [ "$user" = "ung" ]; then
+You dont really need to remember that, but for the knowlidge I desided
+to make a note out of that anyway, mostly for the more experianced readers
+of this tutuorial, and for the readers that have read it several times.
+
+-------------------------------------------------------------------------------
+
+You can also set static text in a variable, which is really easy:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+anyvar="hello world"
+
+echo "$anyvar"
+
+exit 0
+-------------------------------------------------------------------------------
+
+Which executed would look like this:
+
+alien:~$ ./myscript
+hello world
+alien:~$
+
+Easy enough ? =)
+
+-------------------------------------------------------------------------------
+
+Now let's move on to "for" and common for-loops.
+I am actually only going to show one sort of for-loop example, of the reason that
+at this stage no more is needed, and would only confuse.
+as a note, for loops-can be uses (as soon shown) to import strings
+from a file to be used as variables in the script.
+
+Now, here's the example:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+for VAR in `cat list.txt`; do
+echo "$VAR was found in list.txt"
+done
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Note: "done" terminates the loop when finished.
+      "in" and "do" are like bash *grammar*, I'll explain that later.	
+
+      The `cat list.txt` part, the `s around the command will make sure
+      the script/line executes that part as a command, another way of
+      doing this is to: $(cat list.txt)
+      which has the same effect.
+      That's just a note so you wont get confused if you see it used
+      that way some time.
+
+-------------------------------------------------------------------------------
+
+The previous script example is dependent on that there is a file called
+"list.txt", so let's make such, and fill it with something like this:
+
+list.txt
+
+123
+234
+345
+456
+567
+678
+789
+890
+
+-------------------------------------------------------------------------------
+
+Then the executed script would look like this:
+
+alien:~$ ./script2.sh
+123 was found in list.txt
+234 was found in list.txt
+345 was found in list.txt
+456 was found in list.txt
+567 was found in list.txt
+678 was found in list.txt
+789 was found in list.txt
+890 was found in list.txt
+alien:~$
+
+-------------------------------------------------------------------------------
+
+Note: A space in a file read by a for-loop is taken the same way as a new line.
+
+-------------------------------------------------------------------------------
+
+Here is another example, with a for-loop with an if statement:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+for VAR3 in `cat list.txt`; do
+if [ "$VAR3" = "789" ]; then
+echo
+echo "Match was found ($VAR)"
+echo
+fi
+done
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+And executed that looks like this:
+
+alien:~$ ./script3.sh
+
+Match was found (789)
+
+alien:~$
+
+If you have read this in a calm fashion it should be quite clear to you
+so far, but before I move on to real practice examples I will explain
+the while-loop, and some, more which can be used as to count and more,
+for various purposes, as you will see.
+You don't have to *understand* all of how this works, but you should
+at least learn it.
+
+So here we go on an example with "while":
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+count="0"
+max="10"
+
+while [ $count != $max ]; do count=`expr $count + 1`
+        echo "We are now at number: $count"
+done
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Note: expr is a calculator command, you can read more about it later in
+      this tutorial.
+
+-------------------------------------------------------------------------------
+
+This in plain English reads the following:
+
+make variable "count" hold the number 0
+make variable "max" hold the number 10
+
+while 0 is not 10, do add 1 to 0 (each loop until it is 10)
+say "We are now at number: $count" (each time 1 is added as long as we are
+in the loop)
+end the loop
+return to the prompt command line.
+
+-------------------------------------------------------------------------------
+
+Which executed looks like, (you guessed it), this:
+
+alien:~$ ./count.sh
+We are now at number: 1
+We are now at number: 2
+We are now at number: 3
+We are now at number: 4
+We are now at number: 5
+We are now at number: 6
+We are now at number: 7
+We are now at number: 8
+We are now at number: 9
+We are now at number: 10
+alien:~$
+
+-------------------------------------------------------------------------------
+
+Here is another example of a while loop.
+
+#!/bin/bash
+
+agreement=
+while [ x$agreement = x ]; do
+    echo
+    echo -n "Do you agree with this ? [yes or no]: "
+    read yesnoanswer
+    case $yesnoanswer in
+        y* | Y*)
+         	agreement=1
+		;;
+        n* | n*)
+    		echo "If you don't agree, you can't install this sofware";
+    		echo
+    		exit 1
+		;;
+    esac
+done
+
+echo "agreed"
+echo
+-------------------------------------------------------------------------------
+
+This in plain English reads the following:
+
+Make an unknown variable named agreement
+while the unknown variable is unknown and doesnt match the case,
+say "Do you agree with this ? [yes or no]: "
+read the the answer into the "yesnoanswer" variable.
+make a case and check the "yesnoanswer" variable for any words beginning
+with y or Y, and if so, skip the rest and go on with the script
+and say "agreed".
+if it doesnt begin with y or Y, check if it starts with n or N.
+If it does start with a n or N, then say:
+"If you don't agree, you can't install this sofware"
+and quit the script.
+
+-------------------------------------------------------------------------------
+
+Which executed looks like this:
+
+alien:~$ ./agree.sh
+
+Do you agree with this ? [yes or no]: something
+
+Do you agree with this ? [yes or no]: yes
+agreed
+
+Again executed, but with 'no' as answer:
+
+alien:~$ ./agree.sh
+
+Do you agree with this ? [yes or no]: nothing
+If you don't agree, you can't install this sofware
+
+alien:~$
+
+-------------------------------------------------------------------------------
+
+Note that "nothing" begins with 'n' and therfor matches what the script is
+looking for, y or Y, and n or N.
+
+Also see later in the tutorial about `case` statements.
+
+-------------------------------------------------------------------------------
+
+Now I'm going to explain shortly about functions in bash.
+
+A function is like a script within the script, or you could say that
+you make your own little command that can be used in a script.
+It's not as hard as it sounds though.
+
+So here we go on a example:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+function myfunk {
+echo
+echo "hello"
+echo "this is my function"
+echo "which I will display twice"
+}
+
+myfunk
+myfunk
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Which executed looks like this:
+
+alien:~$ ./funk.sh
+
+hello
+this is my function
+which I will display twice
+
+hello
+this is my function
+which I will display twice
+alien:~$
+
+-------------------------------------------------------------------------------
+
+Another example of functions can look like this:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+myvar="$1"
+var2="$2"
+
+if [ "$myvar" = "" ]; then
+echo "Usage: $0 <integer> <integer>"
+exit 0
+fi
+
+function myfunk {
+expr $1 + $2
+}
+
+myfunk $myvar $var2
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Which executed looks like this:
+
+Without any arguments:
+
+alien:~$ ./funk.sh
+Usage: ./funk.sh <integer> <integer>
+
+With arguments:
+
+alien:~$ ./funk.sh 12 3
+15
+alien:~$
+
+------------------------------------------------------------------------------
+
+Note: the $1 and $2 in the function is infact the first and second argument
+      supplied after the function name when it's called for within the script,
+      so you could say that a function is like a separate scrip in
+      the main script.
+
+------------------------------------------------------------------------------
+
+Yet another example of a function is this:
+
+------------------------------------------------------------------------------
+
+#!/bin/bash
+
+myvar="$1"
+
+if [ "$myvar" = "" ]; then
+echo "Usage: $0 <number>"
+exit 0
+fi
+
+function calcfunc { expr 12 + $1 ; }
+
+myvar2=`calcfunc 5`
+
+echo "welcome"
+echo "Now we will calculate 12 + 5 * $myvar"
+
+echo "the answer is `expr $myvar2 '*' $myvar`"
+
+-------------------------------------------------------------------------------
+
+Which executed looks like this:
+
+Without any arguments:
+
+alien:~$ ./funk.sh
+Usage: ./funk.sh <number>
+alien:~$
+
+And with arguments:
+
+alien:~$ ./funk.sh 23
+welcome
+Now we will calculate 12 + 5 * 23
+the answer is 391
+alien:~$
+
+------------------------------------------------------------------------------
+
+And for the sake of knowlidge it should also be said that a function can be
+declared in the following ways aswell:
+
+------------------------------------------------------------------------------
+
+#!/bin/bash
+
+function foo() {
+echo "hello world"
+}
+
+foo
+
+------------------------------------------------------------------------------
+
+#!/bin/bash
+
+foo () {
+echo "hello world"
+}
+
+foo
+
+------------------------------------------------------------------------------
+
+Note that the paranteses after the funtion name are the new thing here.
+It's used exactly the same way as without the paranteses, I just
+added that here so that you wont get confused if you see it made that
+way sometime.
+
+------------------------------------------------------------------------------
+
+So if you make a function, to call for it (to make use of it), just use the
+the functions name just as if it had been a command.
+
+If there is anything that's uncertain at this point, go back and read it again,
+until you understand it, or at least get the basic idea. =)

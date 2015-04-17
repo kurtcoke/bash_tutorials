@@ -1,0 +1,1520 @@
+9.5 - Basic Linux/Unix commands and operation continued
+
+
+ls
+  this is the most basic of all basic commands to know.
+  ls lists the contents of a directory, if you type just `ls`
+  it will list the contents of the current directory, but it can also
+  be used as `ls /way/to/some/other/dir/` to list the contents of
+  some other directory, ls has alot of arguments which are:
+  -a, --all
+  do not hide entries starting with .
+  -A, --almost-all
+  do not list implied . and .. 
+
+  -b, --escape
+  print octal escapes for nongraphic characters 
+
+  --block-size=SIZE
+  use SIZE-byte blocks
+  -B, --ignore-backups
+  do not list implied entries ending with ~ 
+
+  -c
+  sort by change time; with -l: show ctime 
+
+  -C
+  list entries by columns 
+
+  --color[=WHEN]
+  control whether color is used to distinguish file
+  types.  WHEN may be `never', `always', or `auto' 
+
+  -d, --directory
+  list directory entries instead of contents 
+
+  -D, --dired
+  generate output designed for Emacs' dired mode
+  -f
+  do not sort, enable -aU, disable -lst
+  -F, --classify
+  append indicator (one of */=@|) to entries 
+
+  --format=WORD
+  across -x, commas -m, horizontal -x, long -l,
+  single-column -1, verbose -l, vertical -C 
+
+  --full-time
+  list both full date and full time 
+
+  -g
+  (ignored) 
+
+  -G, --no-group
+  inhibit display of group information 
+
+  -h, --human-readable
+  print sizes in human readable format (e.g., 1K 234M 2G) 
+
+  -H, --si
+  likewise, but use powers of 1000 not 1024 
+
+  --indicator-style=WORD
+  append indicator with style WORD to entry names:
+  none (default), classify (-F), file-type (-p) 
+
+  -i, --inode
+  print index number of each file 
+
+  -I, --ignore=PATTERN
+  do not list implied entries matching shell PATTERN 
+
+  -k, --kilobytes
+  like --block-size=1024 
+
+  -l
+  use a long listing format 
+
+  -L, --dereference
+  list entries pointed to by symbolic links 
+
+  -m
+  fill width with a comma separated list of entries 
+
+  -n, --numeric-uid-gid
+  list numeric UIDs and GIDs instead of names 
+
+  -N, --literal
+  print raw entry names (don't treat e.g. control
+  characters specially) 
+
+  -o
+  use long listing format without group info 
+
+  -p, --file-type
+  append indicator (one of /=@|) to entries 
+
+  -q, --hide-control-chars
+  print ? instead of non graphic characters 
+
+  --show-control-chars
+  show non graphic characters as-is (default) 
+
+  -Q, --quote-name
+  enclose entry names in double quotes 
+
+  --quoting-style=WORD
+  use quoting style WORD for entry names:
+  literal, shell, shell-always, c, escape 
+
+  -r, --reverse
+  reverse order while sorting 
+
+  -R, --recursive
+  list subdirectories recursively 
+
+  -s, --size
+  print size of each file, in blocks 
+
+  -S
+  sort by file size 
+
+  --sort=WORD
+  extension -X, none -U, size -S, time -t, version -v
+  status -c, time -t, atime -u, access -u, use -u 
+
+  --time=WORD
+  show time as WORD instead of modification time:
+  atime, access, use, ctime or status; use
+  specified time as sort key if --sort=time 
+
+  -t
+  sort by modification time 
+
+  -T, --tabsize=COLS
+  assume tab stops at each COLS instead of 8 
+
+  -u
+  sort by last access time; with -l: show atime 
+
+  -U
+  do not sort; list entries in directory order 
+
+  -v
+  sort by version 
+
+  -w, --width=COLS
+  assume screen width instead of current value 
+
+  -x
+  list entries by lines instead of by columns 
+
+  -X
+  sort alphabetically by entry extension 
+
+  -1
+  list one file per line 
+
+  --help                 display this help and exit
+  --version              output version information and exit 
+
+  Some good examples are:  
+
+  ls -la
+  ls -laF
+  ls -laF --color
+  ls -d */
+  Also see earlier in this tutorial about the `alias` command
+ -------------------------------------------------------------------------------
+ lsattr
+  list attributes, this command lists a files file system attributes.
+  For more info see: man lsattr
+ -------------------------------------------------------------------------------
+
+
+ lsmod
+  list modules, lists all loaded modules with a very brief information.
+-------------------------------------------------------------------------------
+ lsof
+  list open files, this is a huge command, so if you really
+  wanna find out more about this interesting command you will have
+  to read the manual page for it.
+  But here's an example of use for it:
+  lsof -p 1 
+
+  Which would be the same as:
+  lsof -p `pidof init`
+  Here's another example:
+  lsof -p `pidof httpd | sed 's/ /,/g'`
+  The "-p" means that the following argument will be a PID (Process ID).
+  The "sed" part in the later example replaces any spaces with "," since
+  lsof doesnt want spaces between the pids, as the output of pidof gives.
+  For more info see: man lsof
+ -------------------------------------------------------------------------------
+ lynx
+  lynx is a console based world wide web browser, that has alot of
+  arguments with which it can be executed, but it basicly works like
+  this: lynx <url>
+  If you press 'g' while in lynx you can type in the url where you
+  wanna go, and if you press 'q' you quit lynx.
+  You search in text with lynx with '/' and move around with
+  the arrow keys and the TAB key.
+  A tips is that lynx works as a file manager, as this: lynx </path/>
+  A good usage for lynx is that you can use it as direct downloader,
+  like this: lynx -souce ftp://ftp.bogus.com/foo/bar.tar.gz > bar.tar.gz
+  For more help or information do: lynx --help
+  Or: man lynx
+ -------------------------------------------------------------------------------
+ mail
+  mail is most commonly used to just check your mail in the most
+  simple way by just typing `mail`, but it can also be used
+  with alot of arguments, I have personally never used
+  any arguments to the mail command, but if you wanna check
+  them out do: man mail
+ -------------------------------------------------------------------------------
+ man
+  manual pages, there are several different manual pages, say for example
+  the command exec, `man exec` should bring you little, while
+  `man 3 exec` should bring you the C function manual on exec. 
+
+  The man pages traditional way of storing is:
+  man1 	misc user commands
+  man2 	C programming functions
+  man3 	more C programming functions
+  man4 	network related manuals
+  man5 	system related files
+  man6 	game manuals
+  man7 	misc technical manuals
+  man8 	misc superuser commands
+  man9 	misc system/devices
+  I may be wrong about the category's there, but that's how it seems
+  to me.
+  Anyway, to bring up a manual page simply do: man <command>
+  or: man <number> <command>
+ -------------------------------------------------------------------------------
+ mc
+  midnight commander is a visual shell for *nix Operating Systems.
+  mc is quite large and has alot of arguments, I personally don't use
+  midnight commander at all, but if you wanna learn more about it
+  do: man mc
+ -------------------------------------------------------------------------------
+ mesg
+  mesg is a command with which you control if other users should
+  have write access to your terminal, as `wall` messages, `write`
+  or anything similar. 
+
+  mesg y	turns on the access for others to write to your terminal.
+  mesg n	turns off the access for others to write to your terminal.
+ -------------------------------------------------------------------------------
+ mkdir
+  make directory, creates a directory, works as: mkdir [arguments] dir/
+  The arguments can be as follows:
+  -m, --mode=MODE		see chmod's octal (numerical) modes 
+
+  -p, --parents		no error if existing, make  parent
+  directories  as needed 
+
+  --verbose		print a message for each created directory
+  --help 			display the help and exit
+  --version		output version information and exit
+  mkdir is most commonly used as: mkdir <newdir>
+ -------------------------------------------------------------------------------
+ mknod
+  mknod is used to create special files, as devices.
+  mknod's syntax is this: mknod [arguments] <name> <type> [MAJOR MINOR]
+  It can be used with the following arguments:
+  -m, --mode=MODE
+  set permission mode (as in chmod), not 0666 - umask
+  --help
+  display this help and exit
+  --version
+  output version information and exit 
+
+  MAJOR MINOR are forbidden for <type> p, else they must be used.
+  b      create a block (buffered) special file
+  c, u   create a character (unbuffered) special file
+  p      create a FIFO
+  You need to know the devices major/minior number if you gonna use this
+  command, those are located in /usr/src/linux/Documentation/devices.txt
+  that comes with the kenrnel source.
+  The "char" is the minior and the number before the devices are the
+  major numbers so say that you wanna make a new /dev/null for some
+  reason, then you read the devices.txt and see this: 
+
+  1 char        Memory devices
+  1 = /dev/mem          Physical memory access
+  2 = /dev/kmem         Kernel virtual memory access
+  3 = /dev/null         Null device
+  And so you make the null device like this: 
+
+  mknod /dev/null b 1 3
+  Or if you wanna make a new /dev/scd device to support another
+  emulated scsi cdrom device. (there are 7 scd devices default)
+  So here's how you make another:
+  mknod /dev/scd8 b 11 8
+  This is not as hard at all .....
+  for more info: info mknod
+  or: man mknod
+ -------------------------------------------------------------------------------
+ modprobe
+  modprobe loads modules in a similar way as depmod.
+  See modprobe's manual page: man modprobe
+ -------------------------------------------------------------------------------
+ more
+  more is a command to display a files contents, it's very similar
+  to the `less` command.
+  See `less` and more's manual pages: man more
+ -------------------------------------------------------------------------------
+ mount
+  mount, mounts a media, that is to say that you make the contents
+  of say a hard drive visible to the system on some mountpoint,
+  ie. mount -t vfat /dev/hda1 /windows
+  This command would mount hda1 (the first harddrive's (hd a)
+  first partition (hda 1), as (-t <filesystem>) vfat which is
+  the windows native filesystem.
+  Linux native filesystem is ext2.
+  mount has ALOT of arguments, if you wanna read about them all
+  do: man mount 
+
+  -------------------------------------------------------------------------------
+ mv
+  mv, moves a file or directory.
+  It works like this: mv [argument] <file-to-move> <new-name/location>
+  This is an example: mv /home/alien/bash.tutor /home/old/bash.tutor
+  Or just to rename a file: mv bash.tutor bash.file 
+
+  mv can also be executed with alot of arguments, which are:
+  -b, --backup
+  make backup before removal
+  -f, --force
+  remove existing destinations, never prompt
+  -i, --interactive
+  prompt before overwrite
+  -S, --suffix=SUFFIX
+  override the usual backup suffix
+  -u, --update
+  move only older or brand new non-directories
+  -v, --verbose
+  explain what is being done
+  -V, --version-control=WORD
+  override the usual version control
+  --help
+  display the help and exit
+  --version
+  output version information and exit 
+
+  Here's an example: mv -f /home/alien/bash.tutor /
+  This will by force mv the file to / (if you have write rights to /)
+ -------------------------------------------------------------------------------
+ nc / netcat
+  netcat is by default usually located in: /usr/lib/linuxconf/lib/
+  netcat is very useful in internet based shell scripts, since
+  it can listen on a socket or send to sockets, depending on the version.
+  the default netcat can as far as I know only send to sockets.
+  works basicly like this:
+  /usr/lib/linuxconf/lib/netcat --file <file> <ip> <port>
+  But can be executed with the following arguments:
+  --head <nb_lines>
+  --tail <nb_lines>
+  --send <file>
+  A tip is to make one or two links from /usr/lib/linuxconf/lib/netcat
+  to /usr/local/bin/netcat and perhaps /usr/local/bin/nc
+ -------------------------------------------------------------------------------
+ ncftp
+  ncftp is a very powerful ftp client.
+  ncftp has the following syntax: ncftp [arguments] <host>
+  If no arguments is given it will try to login as anonymous user
+  with an e-mail as password.
+  Most common non-anonymous usage is this: ncftp -u <username> <host>
+  The commands you will use the most once logged on to an ftp
+  is the following: 
+
+  get <name>	download a file
+  put <name>	upload a file
+  ls		list current directory
+  cd  <dir-name>	change directory
+  lls		list local directory
+  lcd		change local directory
+  If you want to read all ncftp's commands and arguments do: man ncftp
+ -------------------------------------------------------------------------------
+ ncftpget
+  ncftpget is a command line based ftp download client. It works
+  like this: ncftpget [arguments] <host> <local-dir> <remote-files> 
+
+  ncftpget comes with ncftp, if you want to see all it's commands,
+  do: man ncftpget
+ -------------------------------------------------------------------------------
+ ncftpput
+  ncftpput is a command line based ftp upload client. It works
+  like this: ncftpput [arguments] <host> <remote-dir> <remote-files>
+  ncftpput comes with ncftp, if you want to see all it's commands,
+  do: man ncftpput
+ -------------------------------------------------------------------------------
+ netstat
+  netstat will show you the network connections to and from your computer
+  that's currently active, it can simply be used by typing `netcat`
+  or it can me used with it's arguments, if you wanna learn
+  more about this command, do: man netcat
+ -------------------------------------------------------------------------------
+ nice
+  nice is a command that can set the priority (cpu time) of a program
+  or a command, the prioretys can be from -20 which is max priority
+  to 19 which is the minimum priority.
+  nice works like this: nice [argument] <command> <argument>
+  The arguments "[argument]" for nice can be:
+  -ADJUST
+  increment priority by ADJUST first
+  -n, --adjustment=ADJUST
+  same as -ADJUST
+  --help
+  display the help and exit
+  --version
+  output version information and exit
+  Example: nice -n -20 make bzImage
+  This will make the kernel with as much CPU as it can.
+  This means this process has more rights then any other process.
+  Another example is: nice -n 19 zgv
+  This will give zgv absolutely lowest priority, and will there for
+  be the slowest moving processes on the system, as if it runs
+  with nice 19 and another process comes and wants more CPU power
+  then there is free, `zgv` will in this case give the other
+  process of it's own power.
+ -------------------------------------------------------------------------------
+ nmap
+  nmap is getting to come as default for some Linux distributions,
+  and is a port scanner, maybe the best port scanner there is.
+  nmap is used like this: nmap [arguments] <host / ip>
+  So say you want to port scan yourself you could do:
+  nmap 127.0.0.1
+  Or: nmap localhost
+  The most commonly used arguments to nmap is the '-sS' which
+  is a SYN scan, and will in most cases not reveal your IP
+  to the one that your scanning, BUT if the other side
+  has any kind of modern logging device as a fairly new
+  firewall or port logger your IP will be shown to him anyway.
+  The other perhaps next most common argument to use is the '-O'
+  argument, which will give you a good guess of what the remote
+  operating system is this function works the same as for
+  the operating system guess program `queso`.
+  Example: nmap -sS -O localhost > localhost.log 
+
+  The '> localhost.log' part will put the outcome of the scan in a file
+  called localhost.log.
+ -------------------------------------------------------------------------------
+ ntpdate
+  ntpdate has no manual page nor any help page what I can found,
+  perhaps I'll write one if I'm bored some day ..... 
+
+  ntpdate will synchronize your computers system clock with an atomic
+  clock. 
+
+  ntpdate's help usage gives this: 
+
+  usage: ntpdate [-bBdqsv] [-a key#] [-e delay] [-k file] [-p samples]
+  [-o version#] [-r rate] [-t timeo] server ...
+  I only use it as: ntpdate <server>
+  Like this: ntpdate ntp.lth.se
+ -------------------------------------------------------------------------------
+ ntsys / ntsysv
+  runlevel confuration tool.
+  This tool lets you configure what services that should be
+  started with your runlevel, alteast ntsysv has a nice
+  ncurses interface that's easy to handle. 
+
+  For moreinformation on this command do: man ntsys
+  Or: man ntsysv
+  Depending on your system.
+ -------------------------------------------------------------------------------
+ objdump
+  objdump is a quite large command, that allows you to dump objects
+  out of a binary file.
+  To dump all objects do: objdump --source <binary file>
+  For more info do: man objdump
+ -------------------------------------------------------------------------------
+ passwd
+  passwd is a little tool to set a password to a user account,
+  it basicly works like this: passwd [arguments] <username>
+  or if you just type `passwd` you will change your own password.
+  passwd can be sued with the following arguments:
+  -d, --delete        delete the password for the named account
+  (root only)
+  -f, --force         force operation
+  -k, --keep-tokens   keep non-expired authentication tokens
+  -l, --lock          lock the named account (root only)
+  -S, --status        report password status on the named account
+  (root only)
+  --stdin         read new tokens from stdin (root only)
+  -u, --unlock        unlock the named account (root only)
+  Help options 
+
+  -?, --help          Show the help message
+  --usage             Display brief usage message
+  You still need to do a: man passwd
+ -------------------------------------------------------------------------------
+ patch
+  patch simply works like this: patch <original-file> <patch-file>
+  A patch is done with the `diff` command as
+  this: diff file1 file2 > patchfile
+  So then to make file1 identical to file2: patch file1 patchfile
+  patch can however be used with a whole lot of arguments,
+  if you are interested do: man patch
+  Or: patch --help
+ -------------------------------------------------------------------------------
+ pidof
+  pidof simply gives the PID of a running process without you having
+  to use "ps", say that you want to find out what pid your init has,
+  (it will always be one for the init), then you do: pidof init
+  Or if you wanna find out which pids are used by the web server (httpd)
+  then you do: pidof httpd
+  So basically you find out the pids from the process name(s).
+  pidof has the following switches:
+  -s     Single shot - this instructs the program to only return one pid. 
+
+  -x     Scripts too - this causes the program to also return process
+  id's of shells running the named scripts. 
+
+  -o     Tells pidof to omit processes with that process id.
+  The special pid %PPID can be used to name the parent process of
+  the pidof program, in other words the calling shell or shell
+  script.
+  For more info see: man pidof
+ -------------------------------------------------------------------------------
+ ping
+  ping is a pretty basic command, that will work
+  as: ping [arguments] <ip-or-host>
+  The arguments can be as follows:
+  -c 	<number> count pings to send
+  -d 	debug
+  -f	ping flood
+  -i	<number> wait number of seconds between each ping
+  -l	<number> preload number of pings
+  -n	numeric IP's only
+  -p	pattern (in hex) to send as pad code in the ping header
+  -q	quiet
+  -R      record route
+  -s 	<number> packet size in bytes
+  -v      Verbose output
+  So say that you wanna send 5 pings that's 128 bytes each to
+  IP 127.0.0.1, then you would do: ping -s 128 -c 5 127.0.0.1
+ -------------------------------------------------------------------------------
+ pmake
+  pmake is *BSD make (so I'm told), see make and: man pmake
+ -------------------------------------------------------------------------------
+ pnpdump
+  pnpdump gives a dump of all ISA pnp devices, good to use
+  with isapnp etc.
+  This is the command you wanna have a look at if your either
+  looking for exact info of some ISA device that is pnp, or
+  if your system has problems finding a ISA pnp device.
+  See the manual pages.
+ -------------------------------------------------------------------------------
+ portmap
+  portmap is the server that maps all RPC services, so if you
+  wanna use any RPC service you wanna have portmap running.
+  For more info: man portmap
+ -------------------------------------------------------------------------------
+ ps
+  ps gives you the process list, as in showing you the running
+  processes with there pid and other info.
+  do: ps --help
+  or: man ps	for more info on what arguments it can be executed
+  with, personally I use: `ps aux` and `ps x` the most. 
+
+  -------------------------------------------------------------------------------
+ pstree
+  process tree, a bit more (ascii) graphical version of ps,
+  do: pstree --help
+  or: man pstree
+  for more help on the arguments, personally I use it alone without
+  arguments. 
+
+  -------------------------------------------------------------------------------
+ pwd
+  print working directory, shows you your current directory.
+  This command can be useful for 2 things what I know of,
+  one is to show you where you are, and the other in scripts
+  to do say: echo "output will go to: `pwd`/logfile"
+ -------------------------------------------------------------------------------
+ quota
+  quota prints the users quota, it works like
+  this: quota [arguments] <user/group>
+  Where the arguments can be:
+  -g     	Print group quotas for the group of which the  user
+  is a member.  The optional
+  -u     	flag is equivalent to the default.
+  -v     	will display quotas on filesystems where no storage
+  is allocated.
+  -q     	Print a more terse message, containing only  infor-
+  mation on filesystems where usage is over quota.
+  For more info on the quota command do: man quota
+ -------------------------------------------------------------------------------
+ quotaoff
+  quotaoff turns the quota off for a file system.
+  quotaoff works like this: quotaoff [arguments] <filesystem>
+  The arguments can be as follows:
+  -a     	Force  all file systems in /etc/fstab to have their
+  quotas disabled.
+  -v     	Display a message for each file system affected.
+  -u     	Manipulate user quotas. This is the default.
+  -g     	Manipulate group quotas.
+  This command is close to quotaon. 
+
+  For more info: man quotaon
+  (Don't think there is a quotaoff man page, quotaon and quotaoff
+  seems to have the same manual page)
+ -------------------------------------------------------------------------------
+ quotaon
+  quotaon turns the quota on for a file system.
+  quotaon works like this: quotaon [arguments] <filesystem>
+  The arguments can be as follows:
+  -a     	All file systems in  /etc/fstab  marked  read-write
+  with quotas will have their quotas turned on.  This
+  is normally used at boot time to enable quotas.
+  -v     	Display a message for each file system where quotas
+  are turned on.
+  -u     	Manipulate user quotas. This is the default.
+  -g     	Manipulate group quotas.
+  For more info: man quotaon
+ -------------------------------------------------------------------------------
+ quotastats
+  quotastats displays the quota stats .... cant find any help, --help
+  or manual page for it. 
+
+  -------------------------------------------------------------------------------
+ read
+  read, reads a variable.
+  Example: 
+
+  echo -n "password: "
+  read pass
+  echo "Password was: $pass"
+  For more info: help read
+ -------------------------------------------------------------------------------
+ reboot
+  reboot does what it says, it reboots the system, you have to be root
+  to use this command.
+  reboot works the same as: shutdown -r now
+  or also the same as if you press: Ctrl+Alt+Del
+  Nothing much more to say about the reboot command.
+ -------------------------------------------------------------------------------
+ reset
+  reset resets the console, say that you have accidently done
+  cat <binary-file> so you totally screwed up your console
+  and you cant read anything on it, then just type `reset`
+  and press enter, and it should be back to normal within some seconds.
+ -------------------------------------------------------------------------------
+ rlogin
+  remote login, if you wanna use this command do: man rlogin
+  bore using it.
+  The most common use of it is: rlogin -l <username> <host>
+ -------------------------------------------------------------------------------
+ rm
+  remove, remove/unlink files, rm can be used with the
+  following arguments:
+  -d, --directory       unlink directory, even if non-empty
+  (super-user only)
+  -f, --force           ignore nonexistent files, never prompt
+  -i, --interactive     prompt before any removal
+  -r, -R, --recursive   remove the contents of directories recursively
+  -v, --verbose         explain what is being done
+  --help            display this help and exit
+  --version         output version information and exit
+  An example is, that if you have a directory called /foo
+  that you wanna delete recursively, then you do: rm -rf /foo
+  Or say that you have a file /foo/bar that you wanna remove
+  without being prompted, then you do it like this: rm -f /foo/bar
+  -------------------------------------------------------------------------------
+ rmmod
+  remove modules, remove a loaded module.
+  List the modules that you can remove with lsmod.
+  And load modules with insmod.
+  man any of them for more information.
+ -------------------------------------------------------------------------------
+ route
+  route, displays the routing table by default.
+  The most common way of adding a route is like this:
+  route add -host <ip> gw <other-ip> 
+
+  And to remove a post:
+  route del -host <ip> gw <other-ip>
+  An example would be, say that you want to route IP 123.123.123.123
+  to 127.0.0.1, this would drop any connection attempts from
+  123.123.123.123 to 127.0.0.1 so he cant connect to you or scan you,
+  (this is true in most cases), you would do:
+  route add -host 123.123.123.123 gw 127.0.0.1
+  Now the route command is bigger then that, so if you wanna
+  learn more about it do: man route
+ -------------------------------------------------------------------------------
+ rpm
+  rpm is a command that is is very important to most distributions.
+  rpm is short for 'redhat package manager' and was developed for
+  RedHat by Caldera.
+  rpm is a HUGE command, and works like this: rpm [arguments] <file>
+  but here are the most commonly used arguments: 
+
+  rpm -ivh <package.rpm>	installs package.rpm
+  rpm -Uvh <package.rpm>	updates package.rpm
+  rpm -e <package>	un-installed/erases package
+  rpm -qf <file>		displays what package the file came with
+  rpm -qlp <package.rpm>	displays the contents of the package.rpm
+  rpm -qRp <package.rpm>  displays the dependencys needed by package.rpm
+  Other arguments and that are commonly used but not recommended are:
+  --force		force install something
+  --nodeps	do not check dependences
+  Another thing is if you installed a *.src.rpm file (that ends up in
+  /usr/src/RPM/*), you can compile a binary .rpm from it.
+  Say that you installed some-package.src.rpm, then you would go to:
+  /usr/src/RPM/SPECS/, and there type: rpm -ba some-package.spec
+  wait a while during the compile, and then you would have a
+  /usr/src/RPM/RPMS/<platform>/some-package.<platform>.rpm 
+
+  the "<platform>" is your platform, as i386, i486, i586, i686,
+  k6, ppc, sprac, noarch etc.
+  To create an rpm from a .src.rpm you first need to know that
+  this should not be done as root for the simple reason that
+  if you make an rpm as root several unworking parts of it may
+  remain in your system generating errors if the compile of
+  the rpm isnt successful.
+  So the first thing you do to do this as user is to create a file
+  named .rpmmacros
+  And in that add the following:
+  %_topdir        ~/RPM
+  This should work to create the file:
+  echo "%_topdir        $HOME/RPM" > ~/.rpmmacros
+  Then you do this:
+  mkdir -p ~/RPM/{SOURCES,SPECS,BUILD,RPMS,SRPMS}
+  Now you're ready to start to build an rpm from a .src.rpm
+  first (as user, not as root) install the source rpm.
+  rpm -ivh package.src.rpm
+  Then you go to ~/RPM/SPECS/
+  The .src.rpm should have installed the sources in ~/RPM/SOURCES
+  and the spec file in ~/RPM/SPECS/
+  The spec file is like a script file, it tells rpm how to compile
+  the source and build the rpm.
+  Now find the spec file in ~/RPM/SPECS/, it's usually named the same
+  as the package, like this: 
+
+  package.spec 
+
+  So not to make an rpm out of it, do this:
+  rpm -ba package.spec
+  If this is successful (which it sadly enough isnt every time because
+  of ill written spec files)
+  You should now have an rpm file in ~/RPM/RPMS/<your architecture>
+  If you have a Pentium 2, the arch command will show "i586" and
+  so the rpm will be found in ~/RPM/RPMS/i586/
+  You will also have a brand new .src.rpm in ~/RPM/SRPMS/
+  If you need to do the rpm to any other target then your own
+  architecture, say you want to do it for i386, then you may do:
+  rpm -ba package.spec --target=i386
+  And so the new rpm will be found in ~/RPM/RPMS/i386/
+  This is about all there is to say about the rpm command in this
+  tutorial.
+  The rpm command and the spec file *scripting* langauge
+  would need a rather large tutorial by it self to be explained
+  in full .... so I wont take up all that here.
+  For more info on the rpm command do: man rpm
+ -------------------------------------------------------------------------------
+ sed
+  sed, stream editor, is already breafly explained in this tutorial,
+  so if you want more info do: man sed
+ -------------------------------------------------------------------------------
+ setleds
+  setleds may show or set the flags and lights on NumLock, CapsLock
+  and ScrollLock.
+  On it's own without any arguments it shows the current settings.
+  The syntax is this: setleds [arguments] <+/-num,caps,scroll>
+  Here's the arguments:
+  -F	This  is the default. Only change the VT flags (and
+  their setting may  be  reflected  by  the  keyboard
+  leds).
+  -D     	Change both the VT flags and their default settings
+  (so that a  subsequent  reset  will  not  undo  the
+  change). This might be useful for people who always
+  want to have numlock set.
+  -L     	Do not touch the VT  flags,  but  only  change  the
+  leds.  From this moment on, the leds will no longer
+  reflect the VT flags (but display whatever  is  put
+  into them). The command setleds -L (without further
+  arguments) will restore the situation in which  the
+  leds reflect the VT flags.
+  -num +num
+  Clear  or  set  NumLock.   (At present, the NumLock
+  setting influences  the  interpretation  of  keypad
+  keys.   Pressing  the  NumLock  key complements the
+  NumLock setting.)
+  -caps +caps
+  Clear or set CapsLock.  (At present,  the  CapsLock
+  setting  complements  the Shift key when applied to
+  letters.  Pressing the CapsLock key complements the
+  CapsLock setting.)
+  -scroll +scroll
+  Clear or set ScrollLock.  (At present, pressing the
+  ScrollLock key (or ^S/^Q) stops/starts console out-
+  put.)
+  Here is a few example, where the first one is from the manualpage,
+  (I'd hate to break the cut'n'paste tradition from the manual pages
+  now), so here are some examples:
+  INITTY=/dev/tty[1-8]
+  for tty in $INITTY; do
+  setleds -D +num < $tty
+  done
+  This would set numlock on for tty1 to tty8
+  Here's another short example:
+  while /bin/true; do
+  setleds -L +caps; usleep 500000
+  setleds -L +num; usleep 500000
+  setleds -L -caps; usleep 500000
+  setleds -L -num; usleep 500000
+  done
+  This would flash the NumLock and CapsLock leds, for infinety.
+  For more info do: man setleds
+ -------------------------------------------------------------------------------
+ seq
+  sequence numbers.
+  seq works baskically like this:
+  seq [OPTION] LAST
+  seq [OPTION] FIRST LAST
+  seq [OPTION] FIRST INCREMENT LAST 
+
+  And can be used with the following options:
+  -f, --format FORMAT      use printf(3) style FORMAT (default: %g)
+  -s, --separator STRING   use STRING to separate numbers (default: n)
+  -w, --equal-width        equalize width by padding with leading zeroes
+  --help               display this help and exit
+  --version            output version information and exit
+  Here's some small examples and what they do:
+  seq 10		(Count from 1 to 10)
+  seq 5 10	(Count from 5 to 10)
+  seq 1 2 10	(Count from 1 to 10 by incrementing two: 1,3,5,7,9)
+  seq 10 0	(Count backwards from 10 to 0)
+  For more info do: seq --help
+ -------------------------------------------------------------------------------
+ sleep
+  sleep works like this: sleep <number of seconds>
+  Not much to say about this command, ... if you wanna read
+  more about it: man sleep
+ -------------------------------------------------------------------------------
+ sort
+  sort, sorts the contents of a file and gives the output to stdout.
+  By default it sorts it in alphabetical order, sort works
+  like this: sort [arguments] <file>
+  sort can be executed with the following arguments:
+  -b     	ignore leading blanks in sort fields or keys
+  -c     	check if given files already sorted, do not sort
+  -d     	consider only [a-zA-Z0-9 ] characters in keys
+  -f     	fold lower case to upper case characters in keys
+  -g     	compare according to general numerical value, imply -b
+  -i     	consider only [ 40- 176] characters in keys
+  -k POS1[,POS2]
+  start a key at POS1, end it *at* POS2
+  field  numbers  and  character offsets are numbered
+  starting with one (contrast  with  zero-based  +POS form)
+  -m     	merge already sorted files, do not sort
+  -M     	compare (unknown) < `JAN' < ... < `DEC', imply -b
+  -n     	compare  according to string numerical value, imply -b
+  -o FILE
+  write result on FILE instead of standard output
+  -r     	reverse the result of comparisons
+  -s     	stabilize sort by disabling last resort comparison
+  -t SEP 	use SEParator instead of non- to whitespace transition
+  -T DIRECTORY
+  use  DIRECTORY  for temporary files, not $TMPDIR or /tmp
+  -u     	with -c, check for strict ordering; with  -m,  only
+  output the first of an equal sequence
+  -z     	end  lines  with  0  byte,  not  newline,  for find -print0 
+
+  --help 		display the help and exit
+  --version	output version information and exit
+  One more time I give thanks to the cut & paste function.
+  Here's an example of sort: sort file1 -o sorted-file2
+  This command works good with the `uniq` command to sort out
+  duplica words, like this: sort file1 | uniq > sorted-file
+  For more info do: man sort
+ -------------------------------------------------------------------------------
+ ssh
+  secure shell, works a bit like telnet but has encryption,
+  ssh is becoming a good standard of encrypted remote shell connections.
+  ssh is however not usually default included in any distros,
+  and there is several versions of it, so if you download it
+  make sure to read all documentations about it.
+  Even though it's not default included, I still wanned to include it
+  in this tutorial to make users that use LAN connections
+  as local networks with more then one user or cable modems aware
+  of this tool, because if they use telnet anyone on the local
+  subnet can sniff the connection and get any login and password
+  used with incoming or outgoing telnet connections.
+  Really anyone can sniff anything that's not encrypted, like
+  ftp logins and passwords, http, IRC, and everything like that.
+  but the most vital to protect is the ways people can enter
+  your system, so if you are on a LAN with more then one user
+  or have any form of cable or non-dialup connection,
+  then disable telnet (put a # in front of the telnet line in
+  /etc/initd.conf and after that do: killall -HUP initd), and then
+  install ssh. 
+
+  -------------------------------------------------------------------------------
+ strip
+  strip strips binary files (executables) of junk code,
+  such as debugging information.
+  This may be very useful to bring down the size of executable files.
+  BUT beware, if you strip the kernel or any other very complex
+  binary, they are likely to malfunction, so use this command
+  wisely, and read it's manual page.
+ -------------------------------------------------------------------------------
+ su
+  su, the manual pages says substitute user and the UNIX command bible
+  says super user ... so it means any of those, it's however used
+  to *become another user*, if you are root and su <user> you wont
+  need to supply any password.
+  If you type only `su` as user you will become root if you have the
+  aproperiet root password.
+  su can be used with the following arguments:
+  -, -l, --login               make the shell a login shell
+  -c, --commmand=COMMAND       pass a single COMMAND to the shell with -c
+  -f, --fast                   pass -f to the shell (for csh or tcsh)
+  -m, --preserve-environment   do not reset environment variables
+  -p                           same as -m
+  -s, --shell=SHELL            run SHELL if /etc/shells allows it
+  --help                   display this help and exit
+  --version                output version information and exit
+  Say now that you wanna su to root and have root's path/enviorment.
+  then you do: su -
+  Or say that you wanna execute a single command as root from being
+  a user, say the command `adduser`, then you do: su -c "adduser"
+  you will be prompted for the password, and if you can supply it
+  the command will be executed as root.
+ -------------------------------------------------------------------------------
+ swapoff
+  turns swap off, it can be used with the following arguments:
+  -h     Provide help
+  -V     Display version
+  -s     Display  swap usage summary by device.  This option
+  is only available if /proc/swaps  exists  (probably
+  not before kernel 2.1.25).
+  -a     All  devices  marked  as  ``sw''  swap  devices  in
+  /etc/fstab are made available.
+  -p priority (man swapon and swapoff for more info on prioretys)
+  Example, say that you wanna turn all swap partitions (from /etc/fstab)
+  off then you do: swapoff -a
+  Again, for more info: man swapoff
+ -------------------------------------------------------------------------------
+ swapon
+  swapon is the opposite of swapoff but has the same arguments.
+  See: man swapon
+ -------------------------------------------------------------------------------
+ tail
+  tail gives by default the last 10 lines out of a file, it's very alike
+  the `head` command, ad works like this: tail [arguments] <file>
+  The most common usage of tail is this: 
+
+  tail -f <file>	This will append the data to stdout as the file grows.
+  very good to view logs as they come in. 
+
+  tail -50 <file>	Displays the last 50 lines from a file.
+  tail has more arguments which you can learn in it's manual page
+  if you are interested, do: man tail
+ -------------------------------------------------------------------------------
+ talk
+  talk is a little daemon controlled by inetd, so if it doesn't
+  work on your local machine make sure the talk line in
+  /etc/inetd.cond are not remmed by a leading # character. 
+
+  Talk gives a real time text chat, in a horizontally divided
+  window or rather console.
+  Talk works like this: talk user@host
+  or just user if it's on the local machine.
+  Say that I wanna send a talk request to user `alfa` on IP
+  123.123.123.132, and I'm user `beta` on 234.234.234.234.
+  Then I type: talk alfa@123.123.123.132
+  And he as answer when the request comes
+  types: talk beta@234.234.234.234 
+
+  What to type as answer comes up when you get a talk request.
+  For more info on the talk command do: man talk
+ -------------------------------------------------------------------------------
+ tar
+  tar, UNIX tape archive, is yet another huge command,
+  it's used to compress a directory to a compressed .tar file,
+  or a single file to a tar file.
+  tar works like this: tar [arguments] <directory-or-file>
+  Here are the most common examples of tar usage:
+  tar -zvxf <file.tar.gz>	uncompress a .tar.gz or .tgz archive
+  tar -vxf <file.tar>	uncompress a .tar archive
+  tar -c --file=<file.tar> <directory>	crates a .tar archive
+  tar -cf	<file.tar> <directory>		  - same as above -
+  tar -tf <file.tar>	list the contents of a .tar file
+  tar -tzf <file.tar.gz>	list the contents of a .tar.gz or a .tgz file
+  tar -czvf <file.tar.gz> <directory>	crates a .tar.gz archive
+  For more info on the tar command, do: man tar
+ -------------------------------------------------------------------------------
+ tcpdump
+  tcpdump is a command that let's you view the traffic on the local
+  subnet or segment, It's not default on many Linux distributions.
+  So if you have it or get it, read it's documentation and it's
+  manual pages, if you want to use it.
+ -------------------------------------------------------------------------------
+ telnet
+  telnet is the most basic of all clients to know.
+  It's not often you will ever use it in other ways
+  then: telnet <host-or-ip> <port>
+  And it's not even so often one uses it with the port number after.
+  Telnet creates a real time connection to another computer,
+  ofcorse the other computer needs a running telnet daemon,
+  and you need to have a login and a password to get in.
+  But when you get in you can remotely work on the other system
+  just as if you sat in front of it.
+  Times when it's good to supply a port number after the host is
+  most commonly to check the version of some daemon/server,
+  as if you want to know the version of your own sendmail, you
+  can always do: telnet 127.0.0.1 25
+  smtp (send mail transfer protocol) runs on port 25.
+  If you wonder what port something runs on check in /etc/services 
+
+  For more info on telnet do: man telnet
+ -------------------------------------------------------------------------------
+ test
+  test is a big command, and is used to generate boolean results
+  out of 2 arguments, to explain the whole command here would take up
+  to much space and time, it can be used like this: 
+
+  test -f /sbin/shutdown && echo "It's there" || echo "It's not there"
+  That line says in clear english:
+  test if file /sbin/shutdown is there, if outcome is true
+  echo "It's there" else echo "It's not there".
+  You can test if a file is executeble, if a string is non-zero etc.
+  Just about anything you can think of.
+  For more info on the many things you can do with the `test`
+  command, do: man test 
+
+  -------------------------------------------------------------------------------
+ touch
+  touch will by default change the date on a file to the current date.
+  It works like this: touch [arguments] <file>
+  If the file doesn't exist if will create a file that's 0 bytes big.
+  The following arguments can be used with touch:
+  -a     	change only the access time
+  -c     	do not create any files
+  -d, --date=STRING
+  parse STRING and use it instead of current time
+  -f     	(ignored)
+  -m     	change only the modification time
+  -r, --reference=FILE
+  use this file's times instead of current time
+  -t     STAMP
+  use [[CC]YY]MMDDhhmm[.ss] instead of current time
+  --time=WORD
+  access -a, atime -a, mtime -m, modify -m, use -a
+  --help
+  display the help and exit
+  --version
+  output version information and exit
+  So say that you have a file called 'file' that I want to change date of
+  to say 'Aug 21 1999 04:04',
+  then you would do: touch -t 9908210404 file
+  For more info on this command do: man touch
+ -------------------------------------------------------------------------------
+ tr
+  translate characters, this command can change all upper case
+  characters to lower case characters in a file or substitute
+  all mumbers to some other characters etc.
+  tr's syntax is: tr [arguments] <SET1> <SET2>
+  tr can be used with the following arguments:
+  -c, --complement
+  first complement SET1
+  -d, --delete
+  delete characters in SET1, do not translate
+  -s, --squeeze-repeats
+  replace sequence of characters with one
+  -t, --truncate-set1
+  first truncate SET1 to length of SET2
+  --help
+  display this help and exit
+  --version
+  output version information and exit
+  And the SET's are as follows: 
+
+  [:alnum:]
+  all letters and digits
+  [:alpha:]
+  all letters
+  [:blank:]
+  all horizontal whitespace
+  [:cntrl:]
+  all control characters
+  [:digit:]
+  all digits
+  [:graph:]
+  all printable characters, not including space
+  [:lower:]
+  all lower case letters
+  [:print:]
+  all printable characters, including space
+  [:punct:]
+  all punctuation characters
+  [:space:]
+  all horizontal or vertical whitespace
+  [:upper:]
+  all upper case letters
+  [:xdigit:]
+  all hexadecimal digits
+  [=CHAR=]
+  all characters which are equivalent to CHAR
+  Examples of tr is:
+  cat file | tr [:upper:] [:lower:]	(change all uppercase to lower)
+  cat file | tr -d [:alnum:]		(delete all numbers and chars)
+  For more info on tr, do: man tr
+ -------------------------------------------------------------------------------
+ traceroute
+  traceroute is a command that traces a route to an IP/host
+  and will give you the number of hops from your computer
+  to the remote computer, and will display the ping times
+  to each computer in the way.
+  traceroute has some arguments that I never needed to use
+  but if you feel curious about this command, feel free
+  to look at the manual pages for it: man traceroute
+ -------------------------------------------------------------------------------
+ ulimit
+  ulimit sets a limit for how much memory etc. users are allowed
+  to use.
+  It works like this: ulimit [arguments]
+  And the arguments can be the following:
+  -S     use the `soft' resource limit
+  -H     use the `hard' resource limit
+  -a     show all settings
+  -c     core file size (in blocks)
+  -d     data seg size (in kilo bytes)
+  -f     file size (in blocks)
+  -l     max locked memory (in kilo bytes)
+  -m     max memory size (in kilo bytes)
+  -n     open files (number)
+  -p     pipe size (512 bytes)
+  -s     stack size (in kilo bytes)
+  -t     cpu time (in seconds)
+  -u     max user processes (number)
+  -v     virtual memory (kilo bytes)
+  Say that I want to set a limit that users can only run 50
+  processes each, the I would do: ulimit -u 50
+ -------------------------------------------------------------------------------
+ umount
+  un mount, un mounts a mountpoint, say that you have mounted your
+  CD-rom drive on /mnt/cdrom then you would do: umount /mnt/cdrom
+  to unmount it.
+  I never used any arguments to this command, but if you wanna learn
+  about them, feel free to do: man umount
+ -------------------------------------------------------------------------------
+ unalias
+  unalias removes a defined alias, say that you have an alias
+  like this: alias du='du -h'
+  And you want to remove it: then you simply do: unalias du
+  To remove all aliases do: unalias -a
+  For more info do: help unalias
+ -------------------------------------------------------------------------------
+ uname
+  uname gives info on the current system, and works as
+  this: uname [arguments]
+  The arguments can be the following:
+  -a, --all        	print all information
+  -m, --machine    	print the machine (hardware) type
+  -n, --nodename   	print the machine's network node hostname
+  -r, --release    	print the operating system release
+  -s, --sysname    	print the operating system name
+  -p, --processor  	print the host processor type
+  -v               	print the operating system version
+  --help       		display this help and exit
+  --version    		output version information and exit
+  The most common way of using uname is: uname -a
+ -------------------------------------------------------------------------------
+ uncompress
+  uncompress uncompresses .Z files, for more info do: man uncompress
+ -------------------------------------------------------------------------------
+ uniq
+  uniq does by default take away duplica words out of a text,
+  which can be good if your sorting out a dictionary.
+  But `uniq` can also be executed with the following arguments:
+  -c, --count
+  prefix lines by the number of occurrences
+  -d, --repeated
+  only print duplicate lines
+  -D, --all-repeated
+  print all duplicate lines
+  -f, --skip-fields=N
+  avoid comparing the first N fields
+  -i, --ignore-case
+  ignore differences in case when comparing
+  -s, --skip-chars=N
+  avoid comparing the first N characters
+  -u, --unique
+  only print unique lines
+  -w, --check-chars=N
+  compare no more than N characters in lines
+  -N     	same as -f N
+  +N     	same as -s N
+  --help
+  display the help and exit
+  --version
+  output version information and exit
+  For more info on this command do: man uniq
+ -------------------------------------------------------------------------------
+ unset
+  this command will remove an alias or function.
+  It has the following options: 
+
+  -v	unset a variable only.
+  -f	unset a function only.
+  By default unset will first try to unset as a variable and if that
+  fails it will try to unset as a function.
+  Here's an example:
+  alien:~$ foo=bar
+  alien:~$ echo $foo
+  bar
+  alien:~$ unset foo
+  alien:~$ echo $foo
+  alien:~$
+  For more info, do: help unset
+ -------------------------------------------------------------------------------
+ unzip
+  unzip is the tool or command to unzip files, it works like this:
+  unzip [arguments] <file.zip> 
+
+  unzip has some arguments I never used, do: unzip --help
+  to get a list of valid arguments.
+  Also feel free to do: man unzip
+ -------------------------------------------------------------------------------
+ updatedb
+  update the locate database, updatedb works like this:
+  updatedb [arguments] <pattern>
+  By default updatedb updates the locate database so it covers the
+  whole system and all it's files, but has the following arguments:
+  -u     	Create slocate database starting at the root direc-
+  tory.  This is the default behavior when called  as updatedb.
+  -U path
+  Create slocate database starting at path path.
+  -e dirs
+  Exclude  directories  in  the  comma-separated list
+  dirs from the slocate database.
+  -f fstypes
+  Exclude file systems in  the  comma-separated  list
+  dirs from the slocate database.
+  -l <num>
+  Security  level.   -l  0 turns security checks off,
+  which will make searches faster.  -l 1 turns  security
+  checks on. This is the default.
+  -q     	Quiet mode; error messages are suppressed.
+  -v     	Verbose  mode;  display files indexed when creating database
+  --help
+  Print a summary of the options to slocate and exit.
+  --version
+  Print the version number of slocate and exit.
+  If you have the whole system updataded in the locate databse,
+  to find a file all you have to do is to: locate <file>
+  For more info: man updatedb
+ -------------------------------------------------------------------------------
+ uptime
+  displays the current uptime (the time the system has been on).
+  with the load average.
+  It shows from left to right:
+  The current time, how long the system has been running,
+  how many users are currently logged on, and the system load
+  averages for the past 1, 5, and 15 minutes.
+  Also do: man uptime
+ -------------------------------------------------------------------------------
+ useradd
+  useradd adds a user account to the system.
+  useradd works like this: useradd [arguments] user
+  Here's a cut & paste from it's manual page (as usual).
+  -c comment
+  The new user's password file comment field.
+  -d home_dir
+  The  new user will be created using home_dir as the
+  value for the user's login directory.  The  default
+  is to append the login name to default_home and use
+  that as the login directory name.
+  -e expire_date
+  The date on which the user  account  will  be  dis-
+  abled.   The  date is specified in the format YYYY-
+  MM-DD.
+  -f inactive_days
+  The number of days after a password  expires  until
+  the  account is permanently disabled.  A value of 0
+  disables the account as soon as  the  password  has
+  expired,  and  a  value of -1 disables the feature.
+  The default value is -1.
+  -g initial_group
+  The group name or  number  of  the  user's  initial
+  login  group.   The group name must exist.  A group
+  number must refer to  an  already  existing  group.
+  The default group number is 1.
+  -G group,[...]
+  A  list  of  supplementary groups which the user is
+  also a member of.  Each group is separated from the
+  next  by  a  comma, with no intervening whitespace.
+  The groups are subject to the same restrictions  as
+  the group given with the -g option.  The default is
+  for the user to belong only to the initial group.
+  -m     	The user's home directory will  be  created  if  it
+  does  not  exist.   The  files  contained in skele-
+  ton_dir will be copied to the home directory if the
+  -k option is used, otherwise the files contained in
+  /etc/skel will be used  instead.   Any  directories
+  contained in skeleton_dir or /etc/skel will be cre-
+  ated in the user's home directory as well.  The  -k
+  option  is  only  valid  in conjunction with the -m
+  option.  The default is to not create the directory
+  and to not copy any files.
+  -M     	The  user  home directory will not be created, even
+  if the system wide settings from /etc/login.defs is
+  to create home dirs.
+  -n     	A  group  having  the  same  name as the user being
+  added to the system will  be  created  by  default.
+  This  option  will turn off this Red Hat Linux spe-
+  cific behavior.
+  -r     	This flag is used to create a system account.  That
+  is, an user with an UID lower than value of UID_MIN
+  defined in /etc/login.defs. Note that useradd  will
+  not  create  a  home  directory  for  such an user,
+  regardless    of    the    default    setting    in
+  /etc/login.defs.   You have to specify -m option if
+  you want a home directory for a system  account  to
+  be created.  This is an option added by Red Hat.
+  -p passwd
+  The  encrypted  password,  as returned by crypt(3).
+  The default is to disable the account.
+  -s shell
+  The name of the user's login shell.  The default is
+  to  leave this field blank, which causes the system
+  to select the default login shell.
+  -u uid 	The numerical value of the user's ID.   This  value
+  must  be unique, unless the -o option is used.  The
+  value must be non-negative.  The default is to  use
+  the  smallest  ID value greater than 99 and greater
+  than every other user.  Values between 0 and 99 are
+  typically reserved for system accounts. 
+
+  When the -D argument is used useradd with either give the
+  default values or update them if there is more arguments.
+  The other arguments can be:
+  -b default_home
+  The  initial  path  prefix  for  a  new user's home
+  directory.  The user's name will be affixed to  the
+  end  of  default_home  to  create the new directory
+  name if the -d option is not used when  creating  a
+  new account.
+  -e default_expire_date
+  The date on which the user account is disabled.
+  -f default_inactive
+  The  number  of  days  after a password has expired
+  before the account will be disabled.
+  -g default_group
+  The group name or  ID  for  a  new  user's  initial
+  group.  The named group must exist, and a numerical
+  group ID must have an existing entry .
+  -s default_shell
+  The name of the new user's login shell.  The  named
+  program  will  be  used  for  all  future  new user
+  accounts.
+  Also feel free to read the manual page: man useradd
+ -------------------------------------------------------------------------------
+ userdel
+  userdel removes a user from the system.
+  userdel works like this: userdel [argument] <user>
+  The only argument to this command is:
+  -r	removes the users home directory, along with the user.
+  This will delete the users login and everything from the system.
+  userdel will not remove the user if he is currently logged
+  in to the system or have any processes running.
+  So make sure you kill all processes owned by the user,
+  if any, before removing his/her account. 
+
+  To kill the all running processes owned by the same user
+  you can do the following command (change <user> to the username): 
+
+  for pids in `ps U <user> | cut -c 1-6`; do kill -9 $pids ; done
+ -------------------------------------------------------------------------------
+ users
+  Display the currently logged in users.
+ -------------------------------------------------------------------------------
+ usleep
+  usleep is another version of the sleep command, but instead of beeing
+  told how many seconds to sleep, it sleeps in microseconds.
+  So `usleep 1000000` makes it sleep for 1 second.
+ -------------------------------------------------------------------------------
+ w
+  w is like a mix of who and finger, it's used to see who's logged
+  on to the system and will show the following:
+  login name, terminal, host, login time, idle time, JCPU (total cpu time
+  that user (terminal) takes up), PCPU (cpu time of the users current
+  process which is shown in the next field), what (process)
+ -------------------------------------------------------------------------------
+ wall
+  wall is a superuser command to send a string of text to all
+  consoles/terminals, wall can work either like: wall <string>
+  or: wall <file with string in it>
+  To wall special characters like "=)" you need to do it like
+  this: wall '<string> =)' 
+
+  -------------------------------------------------------------------------------
+ wc
+  word count, works basicly like this: wc [argument] <file>
+  Where the arguments can be any of the following:
+  -c, --bytes, --chars   print the byte counts
+  -l, --lines            print the newline counts
+  -L, --max-line-length  print the length of the longest line
+  -w, --words            print the word counts
+  --help             display this help and exit
+  --version          output version information and exit 
+
+  So to find out the number of words in a file called say "file1",
+  you would do: wc -w file1
+  Or to find out the number of lines in the same file you would
+  do: wc -l file1
+  This little tool can prove to be very useful, though when you
+  use it with the -l/--lines argument it will only count lines that
+  contains any characters, if you wanna count all lines
+  including empty lines, use: grep -c . file1
+  or the same thing in another way: cat file1 | grep -c .
+ -------------------------------------------------------------------------------
+ whatis
+  whatis searches for words in the whatis database, say that you
+  are looking for a manual page about the `shutdown` command.
+  Then you can do: whatis shutdown
+  for more information, do: man whatis
+  Or: man apropos
+ -------------------------------------------------------------------------------
+ whereis
+  whereis looks for something just as the `which` command here below.
+  but looks for matches in more places, as the manual page directory's.
+  It works like this: whereis [argument] <what-you-wanna-find>
+  Try this command a few times, and if you want to learn
+  more about it as it's arguments and so do: man whereis
+ -------------------------------------------------------------------------------
+ which
+  which will tell you where a command is located, as if you
+  do: which shutdown
+  it will answer: /sbin/shutdown
+  This command will search your path for whatever you type after it.
+  This command is best used in scripts and functions, like this:
+  function whichrpm { rpm -qf `which $1`; }
+  The which command has some arguments, and more examples in it's
+  manual page, so for more info do: man which
+ -------------------------------------------------------------------------------
+ who
+  who is a little command that shows you who's logged on,
+  on what tty and at what time they logged on.
+  I never ever used this command with any arguments,
+  but if you want to learn more about this command do: who --help
+  or: man who 
+
+  -------------------------------------------------------------------------------
+ whoami
+  displays your user name, same as `id -un`.
+  whoami can be used with the following arguments:
+  --help      display this help and exit
+  --version   output version information and exit
+  Not much more to say about this command.
+ -------------------------------------------------------------------------------
+ whois
+  whois is a tool that asks internic for information on a domain name.
+  This is only for .com .org .net etc.
+  If any luck it will give you the name and other info of the one that
+  registered the domain, and it's name servers.
+  whois can also be used to do: whois user@host
+  For more info on this command do: man whois
+  Or: man fwhois 
+
+  -------------------------------------------------------------------------------
+ yes
+  yes is a command that repeats the same thing over and over again,
+  it's used as this: yes <string>
+  If no string or word is supplied it will repeat the character 'y'.
+  yes can be used with the following arguments:
+  --version	display the version and exit.
+  --help		display the help and exit.
+ -------------------------------------------------------------------------------
+ zip
+  zip is a compression tool, to compress with zip do: 
+
+  zip [arguments] <file.zip> <file1> <file2> etc. 
+
+  The arguments can be the following:
+  -f   freshen: only changed files
+  -u   update: only changed or new files
+  -d   delete entries in zipfile
+  -m   move into zipfile (delete files)
+  -r   recurse into directories
+  -j   junk (don't record) directory names
+  -0   store only
+  -l   convert LF to CR LF (-ll CR LF to LF)
+  -1   compress faster
+  -9   compress better
+  -q   quiet operation
+  -v   verbose operation/print version info
+  -c   add one-line comments
+  -z   add zipfile comment
+  -@   read names from stdin
+  -o   make zipfile as old as latest entry
+  -x   exclude the following names
+  -i   include only the following names
+  -F   fix zipfile (-FF try harder)
+  -D   do not add directory entries
+  -A   adjust self-extracting exe
+  -J   junk zipfile prefix (unzipsfx)
+  -T   test zipfile integrity
+  -X   eXclude eXtra file attributes
+  -y   store symbolic links as the link instead of the referenced file
+  -R   PKZIP recursion (see manual)
+  -h   show the help
+  -n   don't compress these suffixes
+  To uncompress a zip file, use the `unzip` command. 
+
+  -------------------------------------------------------------------------------
+ And that is most of the commands you'll ever encounter while scripting or
+  using a *nix system.
+  There are LOADS of other commands, but not many that are as used as these
+  I just explained.
+ There are more really useful commands that I never seen as default
+  on any system aswell, like pgp and gpg, I havent included those since
+  there full documentation comes with the same package as that
+  command/application if you download it.
+ So, as I said these are the most useful commands, but if someone out there
+  think I missed some really useful command send me a mail and I'll add it.

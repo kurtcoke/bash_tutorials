@@ -1,0 +1,74 @@
+2 - Where to start
+
+===============================================================================
+2 - Where to start
+===============================================================================
+
+You should always start with very simple scripts that you really don't have
+any practical use for but still *could* be of practical use =)
+
+As for first let's make what we already know to a *real* executable script.
+Open a text editor (name the file myscript.sh) and type this:
+
+#!/bin/bash
+
+echo -n "password: "
+read pass
+echo "Your pass is $pass"
+
+save & exit --- then do this command: chmod u+x myscript.sh
+Then we can execute it:
+
+	alien:~$ ./myscript.sh
+	password: <type what you want>
+	Your pass is <what you typed>
+	alien:~$
+
+The "#!/bin/bash" at the start of the file is to let the script know what
+shell type it should use.
+
+The "chmod u+x myscript.sh" is to make it executable.
+(change-mode user+execute-right-on myscript.sh) ..... read the manual pages
+on chmod for more info on it =)
+
+-------------------------------------------------------------------------------
+Take alot of time to play around in your system, open files, figure out
+what they do (but don't edit or remove them).
+
+Take time also to learn some good text editor, that's important.
+Learn, emacs or vi, those are by most people considerd the absolutly best,
+but jed, joe, elvis, pico or any simple editor like that will do
+just fine for now.
+
+emacs and vi are explained later in this tutorial.
+
+
+-------------------------------------------------------------------------------
+
+Another thing before moving on is that you can export a variable from a
+script.
+
+Say that you have the variable "$var" in a script and want to export
+it to the system for use with some other script or something, you can
+do: export var
+
+Like this little script:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+VAR="10"
+export VAR
+
+-------------------------------------------------------------------------------
+
+Note: VAR="10" can not be written as VAR = "10", since it's
+      'whitespace-sensetive'.
+
+-------------------------------------------------------------------------------
+
+But more to how to make scripts in a second, I just thought that this would
+be a good time to enlighten you about this.
+
+So here we go!

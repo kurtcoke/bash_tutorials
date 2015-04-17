@@ -1,0 +1,1369 @@
+9 - Basic Linux/UNIX commands and operations
+
+
+This section is about Linux and UNIX basic commands and operations, and some
+  other explanations and tricks, since this is not a command bible,
+  I'll explain each command breafly, with alot of help from the
+  man pages and the --help argument (let's all thank the maker for cut & paste).
+  Then again, I've seen files that have claimed to be UNIX command bibles
+  that are even breafer and hold less commands... though most of the authors
+  of those seems to be totally uncapeble of handling a UNIX and cant even spell,
+  one of the worst examples I've seen was something like this:
+  "The UNIX bible, in this phile is all the UNIX commandz j00 need"
+  And after that was a list of commands without arguments... needless to say
+  is also that 99% of all UNIX commands were missing.
+  Anyway, enough of me making fun of those people now, and on with the tutorial.
+  (Which isn't a UNIX command bible, just a note)
+  I will refer to "*nix" here, and that means any sort of UNIX system,
+  Linux, BSD, Solaris, SunOS, Xenix and so on included.
+ ------------------------------------------------------------------------------
+ Here are the basic *nix commands, with breaf explanations.
+ ------------------------------------------------------------------------------
+ adduser
+  Syntax: adduser [arguments] <user>
+  And can be used with the following arguments:
+  -u uid
+  -g group
+  -G group,...
+  -d home directory
+  -s shell
+  -c comment
+  -k template
+  -f inactive
+  -e expire mm/dd/yy
+  -p passwd
+  Then there are a few arguments with no explanation:
+  -o, -m, -n, and -r
+  So say that you wanna add a user named "user" with password "resu"
+  belonging to the group root with / as home directory using /bin/tcsh
+  as shell, that would look as this:
+  adduser -p resu -g root -d / -s /bin/tcsh user
+ ------------------------------------------------------------------------------
+ alias
+  The alias command set's an alias, as this: alias du='du -h'
+  This means that whenever you type: du
+  it will really do: du -h
+  Typing alias by it self will display all set aliases. 
+
+  For more information on the alias command do: help alias
+ ------------------------------------------------------------------------------
+ apropos
+  apropos checks for strings in the whatis database. say that you
+  are looking for a manual page about the `shutdown` command.
+  Then you can do: apropos shutdown
+  for more information, do: man whatis
+  Or: man apropos 
+
+ ------------------------------------------------------------------------------
+ awk
+  awk is a text formatting tool, that is HUGE, it's actually a whole
+  language, some say it's not totally wrong to say that awk is not
+  far off from a scripting version of C.
+  However I wouldent go as far as to say that there resemblance
+  is that great.
+  awk's most common use is about the same as 'cut', and it works like
+  this: awk [argument-1] [argument-2] ....
+  Here's some example's of converting an URL:
+  echo "http://www.bogus.com/one/two.htm" | awk -F'/' '{print $3}'
+  This will return: www.bogus.com
+  The -F will set a delimiter, and the '{print $3}' will print the
+  third feild, separated by the delimiter, which is www.bogus.com,
+  because there is 2 slashes, which makes the second slash the second
+  feild, and so www.bogus.com is the third feild.
+  Here's another example:
+  echo "http://www.bogus.com/one/two.htm" | awk -F'/' '{print $(NF)}'
+  This will return: two.htm
+  The -F set's the delimiter, which once again is /, but this time
+  we have used $NF which always resembles the last feild.
+  Another example with NF is this: 
+
+  echo "http://www.bogus.com/one/two.htm" | awk -F'/' '{print $(NF - 1)}'
+  This will return: one
+  Because $(NF - 1) means the last feild minus one feild, which always
+  will be the next last feild.
+  You only have to use the ()'s around variables when you do something
+  with them like here "$(NF - 1)", but you can use $(var) all the time
+  if you want.
+  Here's another example: 
+
+  echo "http://www.bogus.com/one/two.htm" | awk -F'/' '{print $3 "/" $(NF - 1)}'
+  This will return: www.bogus.com/one
+  It will first print out the third feild separated by /'s, which is
+  www.bogus.com, then it will print a /, and then it will print out
+  the next last feild which is one. 
+
+  Here is a very shoer final example of awk:
+ echo "http://www.bogus.com/one/two.htm" | awk '{ while  ( $(1) ) print }'
+  This will return: "http://www.bogus.com/one/two.htm" forever.
+  The "while ( $(1) )" means that as long as there is first feild,
+  it will print the line line.
+  And since there will always be a first feild it will continue
+  forever.
+  while in awk works as this: while ( condition ) action  
+
+  As I said, awk is huge and is actually a whole language, so
+  to explain all of it it would need a tutorial of it's own.
+  So I will not go any deeper into awk here, but you can as always
+  read it's manual page which is quite large.
+  So, for more info do: man awk  
+
+  ------------------------------------------------------------------------------
+ basename
+  basename will strip directory and suffix from filenames.
+  This command only have the two following flags:
+  --help      display this help and exit
+  --version   output version information and exit
+  It works like this:
+  alien:~$ basename /usr/local/bin/BitchX -a
+  BitchX
+  alien:~$ basename http://www.domain.com/path/to/file.html
+  file.html
+  alien:~$
+  For more info do: man basename
+ ------------------------------------------------------------------------------
+ bc
+  A precision calculator, can be used with the following arguments:
+  -l     Define the standard math library.
+  -w     Give warnings for extensions to POSIX bc.
+  -s     Process exactly the POSIX bc language.
+  -q     Do not print the normal GNU bc welcome.
+  -v     Print the version number and copyright and quit.
+ -------------------------------------------------------------------------------
+ BitchX
+  BitchX is usually not default on any system, but it's the far
+  msot advanced IRC client to *nix.
+  BitchX started as a script to ircii (ircii is irc2 an extended
+  irc protocol, also EPIC which is more bareboned then BitchX is
+  made from ircii), until BitchX got hard coded to the protocol
+  in C, by panasync I belive.
+  BitchX has alot of arguments but can be executed without any
+  arguments.
+  This is the synatx: BitchX [arguments] <nickname> <server list>
+  And here are the arguments anyway:
+  -H <hostname>	this is if you have a virtual host.
+  -c <#channel>	auto join a channel, use a  infront of the #
+  -b		load .bitchxrc or .ircrc after connecting to a server
+  -p <port>	connect on port (default is 6667)
+  -f           	your terminal uses flow controls (^S/^Q),
+  so BitchX shouldn't
+  -F           	your terminal doesn't use flow control (default)
+  -d		dumb terminal mode (no ncurses)
+  -q		dont load the rc file ~/.ircrc
+  -r <file>       loads file as list of servers to connect to
+  -n <nickname>	set the nickname to use
+  -a              adds default servers and command line servers
+  to server list
+  -x          	runs BitchX in "debug" mode
+  -Z              use NAT address when doing dcc
+  -P              toggle check pid.nickname for running program
+  -v		show client version
+  -B              fork BitchX and return you to shell. pid check on.
+  -l <file>    	loads <file> in place of your ~/.ircrc
+  -L <file>    	loads <file> in place of your .ircrc and
+  expands $ expandos 
+
+  The most common way of starting BitchX is this, say that you want
+  to have the nick 'Bash' on server irc.bogus.com, then you can do:
+  BitchX Bash irc.bogus.com 
+
+  There is so much to say about BitchX that it would need a tutorial
+  of it's own, I'm currently writing a BitchX script, so maybe
+  I'll write a BitchX tutorial some time =)
+ -------------------------------------------------------------------------------
+ bzcat
+  bzcat will uncompress a .bz2 file 'on the fly' as it cat's it.
+  the actual file will remain compressed after bzcat has displayed
+  the contents.
+  bzcat has to my knowlidge only one switch, and that's
+  -s, that uses less memory.
+  bzcat works like this: 
+
+  bzcat file.bz2
+  This can be good if you wanna search something in a text file
+  that has been bzip2'd.
+  Examples:
+  bzcat file.bz2 | grep 'text string'
+  bzcat file.bz2 | wc -l
+ -------------------------------------------------------------------------------
+ bzip2 
+
+  Compression tool, compresses harder then the standard gzip.
+  bzip2 can be used with the following arguments:
+  -h --help           print this message
+  -d --decompress     force decompression
+  -z --compress       force compression
+  -k --keep           keep (don't delete) input files
+  -f --force          overwrite existing output files
+  -t --test           test compressed file integrity
+  -c --stdout         output to standard out
+  -q --quiet          suppress noncritical error messages
+  -v --verbose        be verbose (a 2nd -v gives more)
+  -L --license        display software version & license
+  -V --version        display software version & license
+  -s --small          use less memory (at most 2500k)
+  -1 .. -9            set block size to 100k .. 900k
+  Normally used as: bzip2 -d file.bz2 (to decompress a file)
+  or bzip2 -z file (to compress a file) 
+
+  -------------------------------------------------------------------------------
+ cat
+  cat followed by a filename will bring the contents of the file
+  out to the screen (stdout), and can be used with the following
+  arguments:
+  -A, --show-all           equivalent to -vET
+  -b, --number-nonblank    number nonblank output lines
+  -e                       equivalent to -vE
+  -E, --show-ends          display $ at end of each line
+  -n, --number             number all output lines
+  -s, --squeeze-blank      never more than one single blank line
+  -t                       equivalent to -vT
+  -T, --show-tabs          display TAB characters as ^I
+  -u                       (ignored)
+  -v, --show-nonprinting   use ^ and M- notation, except for LFD and TAB
+  --help               display this help and exit
+  --version            output version information and exit
+ -------------------------------------------------------------------------------
+ cc
+  C compiler, can be used with ALOT of arguments, do a man cc to find
+  out just how many, it's normally used to compile a .c source file to an
+  executable binary, like this:
+  cc -o program program.c
+ -------------------------------------------------------------------------------
+ cd
+  change directory, works as this:
+  cd /way/to/directory/I_want_to/be/in/
+  No further explanation needed.
+ -------------------------------------------------------------------------------
+
+
+ chattr
+  This is a very powerful command with which you can change the
+  attributes on an ext2 file system.
+  This means that you can make a file impossible to remove
+  for as long as the attributes are there.
+  The attributes that can be added or removed are the follwoing: 
+
+  A	Don't update atime.
+  S	Synchronous updates.
+  a	Append only.
+  c	Compressed.
+  i	Immutable.
+  d	No dump.
+  s	Secure deletion.
+  u	Undeletable.
+  So here is an example: 
+
+  chattr +iu /etc/passwd
+  This makes it impossible to remove the /etc/passwd file unless
+  you first do:
+  chattr -iu /etc/passwd
+  This can also be good for the logs, esecially, with the a attribute.
+  To see the attributes, use: lsattr
+  For more info do: man chattr
+ -------------------------------------------------------------------------------
+ chmod
+  chmod is a very useful command, it changes the rights of any file.
+  To understand this command you need to understand how the permission
+  line works: 
+
+  -rwxr-xr-x    1 alien    users          58 Feb  7 13:19 file1
+  -rw-r--r--    1 alien    users        3.1k Feb  3 15:47 file2 
+
+  Let's break the -rwxr-xr-x down into 4 sections:
+  - rwx r-x r-x
+  The first - you can not change, that tells what sort of file it is,
+  as if it's a special file, a directory or a normal file.
+  The second rwx is the rights of the owner of the file.
+  The third r-x is the rights the group of the file has.
+  And the fourth r-x tells us what right others/anyone else has.
+  The rights can be: 
+
+  r	read rights.
+  w	write rights.
+  x 	execute rights.
+  s       suid (su id, execute with someome else's uid, usually root)
+  t       saves the programs text on the swap device
+  X	executes file only if it's in a dir that has execute rights 
+
+  Then we need to know in what of those 3 last fields to set those
+  rights, they can be set to: 
+
+  a	all (changes the 3 fields syncroniously)
+  u	user
+  g	group
+  o	others/anyone else 
+
+  You can add or remove rights with the following arguments: 
+
+  +	add a right
+  -	remove a right
+  =	absolute right
+  So say now that we have a file called file1, that looks like this: 
+
+  -rwxr-xr-x    1 alien    users          58 Feb  7 13:19 file1 
+
+  And we wanna take away all execution rights.
+  Then we can either do:
+  chmod a-x file1
+  or
+  chmod ugo-x file1
+  And if we wanna make a file executable to everyone in it's group,
+  in this case the group "users", then we do:
+  chmod g+x file1
+  The other way to do this, is to use octal numbers to set the
+  rights in the permission line.
+  This requires a bit more thinking if your not use to it, but here's
+  how it works: 
+
+  First we break up the permission line into 3 sections again (not
+  counting the leading - or d), and then we put numbers on each
+  of the 3 fields in each of the 3 sections.
+  - rwx rwx rwx
+  421 421 421
+  Now to change a line to say: -rwxrx-r-x
+  You would:
+  x and r in the last field, that would mean 1+4=5, then the same thing
+  in the middle field, and last we have r, w and x in the first so then
+  we count them all, 1+2+4=7.
+  If we now line up our results of this little mathematic we get: 755
+  And so to change a permission line to -rwxrx-r-x we do:
+  chmod 755 <file>
+  Here's how it looks:
+  Oct     Bin    Rights
+  0         0 	---
+  1         1 	--x
+  2        10 	-w-
+  3        11 	-wx
+  4       100 	r--
+  5       101 	r-x
+  6       110 	rw-
+  7       111 	rwx
+  Then we have the suid stuff for this with octal counting, that you set
+  before the normal rights, I'll explain that in a bit, first here
+  is the number codes for the special options as suid.
+  7*** SUID (user & group and set's file +t)
+  6*** SUID (user & group)
+  5*** SUID +t (saves the files text to the swap partition and SUID user)
+  4*** SUID (user)
+  3*** SUID (group and set's file +t)
+  2*** SUID (group)
+  1*** +t (saves the files text to the swap partition)
+  0*** nothing
+  Here's how it looks:
+  Oct	Bin    Rights
+  -	--- rwx rwx rwx
+  0  	  0 --- --- ---
+  1	  1 --- --- --t
+  2	 10 --- --s ---
+  3	 11 --- --s --t
+  4	100 --s --- ---
+  5	101 --s --- --t
+  6	110 --s --s ---
+  7	111 --s --s --t
+  So if you have a file that we can call 'foo.sh' and you wanna make
+  so that only the user has write permissions to it, the user
+  and group has read and execute permissions, and all others has no
+  rights at all to it.
+  Then we would count: others, 0, group 5, user 7, and then to SUID
+  the group we add a 2 in front of what we have, which means:
+  chmod 2750 foo.sh
+  This will make foo.sh's permission line look like this: 
+
+  -rwxr-s--- 
+
+  To do the exact same with characters, you do:
+  chmod u+rwx,go-rwx,g+s foo.sh
+  The most common premissions for files is  
+
+  Executeble:      (755)   -rwxr-xr-x
+  Non-Executeble:  (644)   -rw-r--r--
+  The easyest way of setting these is by eather do: 
+
+  chmod 755 file
+  or
+  chmod =rwxrxrx file 
+
+  chmod 644 file
+  or
+  chmod =rwrr file
+  For more information, do: man chmod
+ -------------------------------------------------------------------------------
+ chown
+  chown changes owner of a file, it can actually also change the group.
+  it works like this:
+  chown user file
+  This would change the owner of the file to user, but note that
+  you can not change to owner of a file to a user that's owned
+  by someone else, same thing is that you can not change another
+  users files so that you own them.
+  Basicly, you need to be root to for this command in most cases.
+  If you wanna change both the user and the group of a file, you do
+  like this:
+  chown user.group file
+  That would change the owner of the file to user and the group
+  of the file to group.
+  For more info on this do: man chown
+ -------------------------------------------------------------------------------
+ chroot
+  runs a command or interactive shell with special root directory.
+  It works like this: 
+
+  chroot /new/root/directory/ command 
+
+  This can be good for some programs or commands, that rather
+  would have / as root directory then ~/ etc.
+ -------------------------------------------------------------------------------
+ cmp
+  compares 2 files for differences, it can be used with the
+  following arguments:
+  -l    Print the byte number (decimal) and the differing byte
+  values (oc- tal) for each difference.
+  -s    Print nothing for differing files; return exit status only. 
+
+  It works like this: 
+
+  cmp file1 file2
+  Or
+  cmp -s file1 file2
+  Not a very big, but still useful command.
+ -------------------------------------------------------------------------------
+ cp
+  copy, copy's a file from one location to another, may also copy
+  one filename to another, used as this:
+  cp file /some/other/dir/
+  or
+  cp file file.old
+ -------------------------------------------------------------------------------
+ crontab
+  Crontab has already been explained in this tutorial.
+ -------------------------------------------------------------------------------
+ cut
+  cut is a very powerful command, that allows you to cut in texts,
+  It works like this: cut [arguments] <file>
+  -b, --bytes=LIST
+  output only these bytes
+  -c, --characters=LIST
+  output only these characters
+  -d, --delimiter=DELIM
+  use DELIM instead of TAB for field delimiter
+  -f, --fields=LIST
+  output only these fields
+  -n
+  (ignored)
+  -s, --only-delimited
+  do not print lines not containing delimiters
+  --output-delimiter=STRING
+  use STRING as the output delimiter
+  the default is to use the input delimiter
+  --help
+  display the help and exit
+  --version
+  output version information and exit
+  One of the many ways to use it is like this, say that you have a file
+  named "hostlist" that contains this:
+  beta.linux.com has address 216.200.201.197
+  shiftq.linux.com has address 216.200.201.195
+  irc.linux.com has address 216.200.201.199
+  oreilly.linux.com has address 208.201.239.30
+  srom.linux.com has address 204.94.189.33
+  admin.linux.com has address 216.200.201.194
+  And you ONLY wanna list the IP's from it, then you do this: 
+
+  cut -d ' ' -f 4 testfile
+  That will output only the IP's, first we set the delimiter to ' '
+  which means a space, then we display the 4'th field separated by
+  the delimiter, which here is the IP's. 
+
+  Or that you have a file (say named column.txt) that contains this:
+  something                if we have to
+  or someone              cut and paste
+  likes to write          the columns.
+  in columns, we          So what do
+  don't like that          we do about
+  especially not          this ?
+  To cut out each column is done like this: 
+
+  cut -c 1-14 column.txt
+  cut -c 23-40 column.txt
+  This would fist cut the file lengthwise and display characters
+  1-14 and then the same thing again but characters 23-40.
+  Now a simple way to get them in a long row instead of columns
+  in a file is this:
+  cut -c 1-14 column.txt > no-columns.txt
+  cut -c 23-40 column.txt >> no-columns.txt
+ -------------------------------------------------------------------------------
+ date
+  date alone returns the current date and time in the following format: 
+
+  day month  date hr:min:sec timezone year
+  But can be executed with the following arguments:
+  %%   a literal %
+  %a   locale's abbreviated weekday name (Sun..Sat)
+  %A   locale's full weekday name, variable length (Sunday..Saturday)
+  %b   locale's abbreviated month name (Jan..Dec)
+  %B   locale's full month name, variable length (January..December)
+  %c   locale's date and time (Sat Nov 04 12:02:33 EST 1989)
+  %d   day of month (01..31)
+  %D   date (mm/dd/yy)
+  %e   day of month, blank padded ( 1..31)
+  %h   same as %b
+  %H   hour (00..23)
+  %I   hour (01..12)
+  %j   day of year (001..366)
+  %k   hour ( 0..23)
+  %l   hour ( 1..12)
+  %m   month (01..12)
+  %M   minute (00..59)
+  %n   a newline
+  %p   locale's AM or PM
+  %r   time, 12-hour (hh:mm:ss [AP]M)
+  %s   seconds since 00:00:00, Jan 1, 1970 (a GNU extension)
+  %S   second (00..60)
+  %t   a horizontal tab
+  %T   time, 24-hour (hh:mm:ss)
+  %U   week number of year with Sunday as first day of week (00..53)
+  %V   week number of year with Monday as first day of week (01..52)
+  %w   day of week (0..6);  0 represents Sunday
+  %W   week number of year with Monday as first day of week (00..53)
+  %x   locale's date representation (mm/dd/yy)
+  %X   locale's time representation (%H:%M:%S)
+  %y   last two digits of year (00..99)
+  %Y   year (1970...)
+  %z   RFC-822 style numeric timezone (-0500) (a nonstandard extension)
+  %Z   time zone (e.g., EDT), or nothing if no time zone is determinable
+  For example, if you want to the time as hr:min:sec day, you would do:
+  date +'%H:%M:%S %a'
+  Or if you wanted to display the name of the month only, you would do:
+  date +%B
+ -------------------------------------------------------------------------------
+ dc
+  dc is an arbitrary precision calculator.
+  man dc for more info.
+ -------------------------------------------------------------------------------
+ dd
+  disk duplicator, this is a very powerful command, that is
+  useful for doing backups as well as creating boot floppy's
+  from images.
+  Say now that you have a Slackware standard boot floppy image (bare.i)
+  and you want to write it to a floppy, then you do this: 
+
+  dd if=bare.i of=/dev/fd0 conv=sync
+  If you instead have a RedHat or Mandrake boot image, just replace
+  the bare.i in the line with boot.img, under the condition that
+  you are standing in a directory that contains that specific image.
+  The conv=sync part is just there to make sure that the disks are
+  synced.
+  dd is a quite big command so I suggest you take a look at the man page.
+ -------------------------------------------------------------------------------
+ declare
+  declare will declare a variable and may set attributes to it.
+  The attributes declare can set or use with the following flags are:
+  -p        show variable with attributes.
+  -a        to make a variable(s) an array (if supported)
+  -f        to select from among function names only
+  -F        to display function names without definitions
+  -r        to make variable(s) readonly
+  -x        to export variable(s)
+  -i        to make variable(s) have the `integer' attribute set
+  Using `+' instead of `-' turns off the given attribute(s) instead
+  of setting them.
+  If declare is used within a function, the variables will be
+  local, the same way as if the `local` command had been used.
+  The -r option works the same as the `readonly` command.
+  And the -r option can not be removed once it's set.
+  Here's a short example:
+  declare -xr foo=bar
+  This would do the same as to do:
+  export foo=bar; readonly foo
+  For more info on this, do: help declare
+ -------------------------------------------------------------------------------
+ depmod
+  depmod loads kernel modules, and is a very powerful command,
+  it's greatest use is that it can reload all kernel modules
+  in a single line: 
+
+  depmod -a 
+
+  This is especially good if you have recompiled some modules and
+  installed them, and you don't wanna reboot the system.
+  The command also allows you to load single modules or several
+  modules, like this:
+  depmod module1.o module2.o ... etc. 
+
+  For more info, man depmod
+ -------------------------------------------------------------------------------
+ df
+  Reports filesystem disk space usage.
+  df can be used with the following arguments:
+  -a, --all
+  include filesystems having 0 blocks 
+
+  --block-size=SIZE use SIZE-byte blocks 
+
+  -h, --human-readable
+  print sizes in human readable format (e.g., 1K 234M 2G)
+  -H, --si
+  likewise, but use powers of 1000 not 1024
+  -i, --inodes
+  list inode information instead of block usage
+  -k, --kilobytes
+  like --block-size=1024
+  -l, --local
+  limit listing to local filesystems
+  -m, --megabytes
+  like --block-size=1048576
+  --no-sync
+  do  not  invoke  sync  before  getting  usage  info (default)
+  -P, --portability
+  use the POSIX output format
+  --sync invoke sync before getting usage info
+  -t, --type=TYPE
+  limit listing to filesystems of type TYPE
+  -T, --print-type
+  print filesystem type
+  -x, --exclude-type=TYPE
+  limit listing to filesystems not of type TYPE
+  -v     (ignored)
+  --help display this help and exit
+  --version
+  output version information and exit
+  My favorite is to use: df -h
+ -------------------------------------------------------------------------------
+ dhcpcd
+  dhcpcd is used to obtain an IP if you have dynamic IP on a LAN
+  such as a cable modem with dynamic IP.
+ -------------------------------------------------------------------------------
+ dialog
+  The dialog command has already been explained in this tutorial.
+ -------------------------------------------------------------------------------
+ diff
+  diff is a very large command that finds the difference between
+  two files, it's very handy to have to make patches.
+  The basic use of diff is as follows:
+  diff file1 file2
+  for more and full info on this command, do: man diff 
+
+  -------------------------------------------------------------------------------
+ dir
+  Same as "ls".
+ -------------------------------------------------------------------------------
+ dmesg
+  dmesg can print or control the kernel ring buffer.
+  by default it'll show a log of loaded and unloaded modules
+  and other kernel events, like initialization if RAM disks etc.
+  (this is flushed at each reboot)
+  This is useful to make a boot.messages file, bu simply doing this:
+  dmesg > boot.messages
+  If there is any errors at the boot up this command is the first
+  you would use to try to determen the error.
+  This is the syntax of dmesg (cut'n'paste of the man page): 
+
+  dmesg [ -c ] [ -n level ] [ -s bufsize ]
+  The options (-c/-n/-s) means the following:
+  -c
+  clear the ring buffer contents after printing.
+  -s bufsize
+  use  a  buffer  of bufsize to query the kernel ring
+  buffer.  This is 8196 by default (this matches  the
+  default  kernel  syslog  buffer  size in 2.0.33 and
+  2.1.103).  If you have set  the  kernel  buffer  to
+  larger  than  the  default  then this option can be
+  used to view the entire buffer.
+  -n level
+  set the level at which logging of messages is  done
+  to  the  console.   For  example, -n 1 prevents all
+  messages, expect panic messages, from appearing  on
+  the  console.   All  levels  of  messages are still
+  written to /proc/kmsg, so syslogd(8) can  still  be
+  used  to  control  exactly  where  kernel  messages
+  appear.  When the -n option is used, dmesg will not
+  print or clear the kernel ring buffer.
+  When both options are used, only the last option on
+  the command line will have an effect. 
+
+  An example of usage is this:
+  dmesg -c -s 16392 
+
+  This would print the kernel ring buffer (with a buffer size of 16392)
+  And then flush the contents.
+  For more info on this command do: man dmesg
+ -------------------------------------------------------------------------------
+ do
+  do just does what it says, and is used in among others
+  'while' loops, if you have read the whole tutorial this far
+  (and have photographic memory) you understand what I'm saying.
+ -------------------------------------------------------------------------------
+ domainname
+  See hostname.
+ -------------------------------------------------------------------------------
+  du
+  du shows estimated file space usage.
+  du is a good command to show how much space a directory takes up.
+  I prefer to use it with the -h argument (human readable, see df).
+  du has lots of arguments, do `man du` for a full list.
+ -------------------------------------------------------------------------------
+ echo
+  echo will redisplay anything you put after it.
+  This is perhaps the most used command in bash scripting, and
+  very useful in everyday *nix handling as well, I'll get back
+  to that in a moment. but first, echo has the following arguments:
+  -n     do not output the trailing newline
+  -e     enable interpretation of the backslash-escaped characters
+  listed below
+  -E     disable interpretation of those sequences in STRINGs
+  --help display this help and exit (should be alone)
+  --version
+  output  version  information  and  exit  (should be alone)
+  AND these:
+  e       backslash
+  c       suppress trailing newline
+  a       alert (BELL)
+  f	newline and vertical tab
+  n	new line
+  r	delete recursively (rest of line backwards)
+  t	vertical tab
+  v	newline and vertical tab (vertical tab ?)
+  xa	new line
+  xb	newline and vertical tab
+  xc	newline and vertical tab
+  xd	delete rest of line forward
+  xe	ascii ... screws up the console (type reset to get it back) 
+
+  So to get a bell (beep) you just do: 
+
+  echo -e "a"
+  Or to screw up your console, do:
+  echo -e "xe"
+ -------------------------------------------------------------------------------
+ eject
+  With eject you can eject removable medias, such as tapes, JAZ, ZIP,
+  CD-rom and so on.
+  The command is pretty self explanatory, and can be used with the
+  following arguments: 
+
+  -h	 --help
+  -v	 --verbose
+  -d	 --default
+  -a	 --auto
+  -c	 --changerslot
+  -t	 --trayclose
+  -n	 --noop
+  -r	 --cdrom
+  -s	 --scsi
+  -f 	 --floppy
+  -q	 --tape
+  The eject command is used as follows: eject [argument] <name>
+  The name is the name of th drive, either from /dev, /mnt or
+  by it's mountpoint name.
+ -------------------------------------------------------------------------------
+ else
+  Used in 'if' statements, and does what it says, used like this:
+  if [ "arg1" = "arg2" ]; then echo "match" ; else echo "no match" ; fi
+ -------------------------------------------------------------------------------
+ env
+  Display the enviorment settings.
+  Can be used with the following arguments:
+  -i, --ignore-environment. start with an empty environment
+  -u, --unset=NAME. remove variable from the environment
+  --help display this help and exit
+  --version
+ -------------------------------------------------------------------------------
+ exit
+  exit is used to kill the current process.
+  It can either be used to logout or to kill a running script from
+  within the script, in the later case it can be used with a
+  return number as argument, ie. exit 0
+ -------------------------------------------------------------------------------
+ expr
+  expr is a counter or command line calculator, it can handle most
+  simple integer calculations.
+  It can use all the normal ways of counting including boolean
+  operators, such as | OR, != NOT IS, and so on.
+  It's simply used as this: expr 1 + 1
+  One thing to remember, since this is in the command line, if you use
+  * (times), you have to use it like this: expr 2 '*' 2
+  The ' precise quote makes sure that the star is not treated
+  as a wildcard. 
+
+  -------------------------------------------------------------------------------
+  fdisk
+  fdisk is the classic disk handler, with fdisk you can edit your
+  hard drive(s) in alot of ways, as adding or removing partitions,
+  list the partitions and so on.
+  You start fdisk as this: fdisk /dev/<disk to veiw/edit>
+  This may be a disk such as /dev/hda /dev/hdb /dev/hdc and so on.
+  Note that you can not determen a specific HD partition to
+  start from, since fdisk operates on the whole HD.
+  When you start fdisk you will have the following commands,
+  followed by there explanation:
+  a   toggle a bootable flag
+  b   edit bsd disklabel
+  c   toggle the dos compatibility flag
+  d   delete a partition
+  l   list known partition types
+  m   print this menu
+  n   add a new partition
+  o   create a new empty DOS partition table
+  p   print the partition table
+  q   quit without saving changes
+  s   create a new empty Sun disklabel
+  t   change a partitions system id
+  u   change display/entry units
+  v   verify the partition table
+  w   write table to disk and exit
+  x   extra functionality (experts only)
+  And in 'x' the extra functionality (experts only) mode.
+  b   move beginning of data in a partition
+  c   change number of cylinders
+  d   print the raw data in the partition table
+  e   list extended partitions
+  g   create an IRIX partition table
+  h   change number of heads
+  m   print this menu
+  p   print the partition table
+  q   quit without saving changes
+  r   return to main menu
+  s   change number of sectors/track
+  v   verify the partition table
+  w   write table to disk and exit
+  For more info on fdisk, do: man fdisk
+ -------------------------------------------------------------------------------
+ file
+  The file command will tell you what type of file a file is.
+  file basically works like this:
+  file [ -bciknsvzL ] [ -f namefile ] [ -m magicfiles ] file
+  The options are as follows:
+  -b      Do not prepend filenames to  output  lines  (briefmode).
+  -c      Cause  a  checking  printout of the parsed form of
+  the magic file.  This is usually used in  conjunction
+  with  -m  to  debug  a new magic file before installing it.
+  -f namefile
+  Read the names of the files to  be  examined  from
+  namefile  (one per line) before the argument list.
+  Either namefile or at least one filename  argument
+  must  be  present; to test the standard input, use
+  ``-'' as a filename argument.
+  -i      Causes  the  file  command  to  output  mime  type
+  strings  rather  than  the  more traditional human
+  readable  ones.  Thus  it  may  say  ``text/plain;
+  charset=us-ascii''  rather than ``ASCII text''. In
+  order for this option to work,  file  changes  the
+  way  it  handles  files  recognised by the command
+  it's self (such as many of the  text  file  types,
+  directories  etc), and makes use of an alternative
+  ``magic'' file.  (See ``FILES'' section, below).
+  -k      Don't stop at the first match, keep going. 
+
+  -m list
+  Specify an  alternate  list  of  files  containing
+  magic  numbers.   This  can be a single file, or a
+  colon-separated list of files.
+  -n      Force stdout to be flushed  after  check  a  file.
+  This  is  only useful if checking a list of files.
+  It is intended to be used by programs  want  filetype
+  output from a pipe. 
+
+  -v      Print the version of the program and exit.
+  -z      Try to look inside compressed files.
+  -L      option  causes  symlinks  to  be  followed, as the
+  like-named option in ls(1).  (on systems that support
+  symbolic links).
+  -s      Normally, file only attempts to read and determine
+  the type of argument files which  stat(2)  reports
+  are   ordinary  files.   This  prevents  problems,
+  because reading special files  may  have  peculiar
+  consequences.   Specifying  the  -s  option causes
+  file to also read argument files which  are  block
+  or  character  special  files.  This is useful for
+  determining the filesystem types of  the  data  in
+  raw  disk  partitions,  which  are  block  special
+  files.  This option also causes file to  disregard
+  the file size as reported by stat(2) since on some
+  systems it reports a zero size for raw disk partitions.
+  Here's a very simple usage example:
+  file /bin/sh
+  file script.sh
+  For more info do: man file
+ -------------------------------------------------------------------------------
+ find
+  find is a very powerful and useful command, it is as good for finding
+  a file name as to helping you secure your system against hackers. 
+
+  find works basicly like this: find <path> [argument] <file> 
+
+  You REALLY need to read it's manual page, if you wanna know
+  about this command, but here are some examples:
+  Find all files that are set suid root:
+  find / -perm +4000 
+
+  Find all regular files named core (this will skip directory's):
+  find / -type f -name core
+  Find all filenames that contains the word 'conf':
+  find / -name *conf*
+  Find all directory's that ends with 'bin':
+  find / -type d -name *bin
+  Find all files named test.sh and execute them:
+  find / -name test.sh -exec {} ; 
+
+  Find all regular files that contains the word .exe and
+  remove them by force without asking:
+  find / -type f -name *.exe -exec rm {} -rf ;
+  Even if you are root you may come across errors like this: 
+
+  find: /proc/10502/fd: Permission denied
+  The easiest way to deal with this is to add a: 2>/dev/null
+  after your command string, that will direct all such errors
+  to /dev/null (the black hole of UNIX :P)
+ -------------------------------------------------------------------------------
+ ftpwho
+  ftpwho is a command where you can see how many users there are
+  logged on to your ftp, under the condition that you have an
+  ftp server on your system that is.
+ -------------------------------------------------------------------------------
+ g++
+  GNU C++ compiler.
+  See it's man page.
+  -------------------------------------------------------------------------------
+ gcc
+  GNU C Compiler.
+  See cc
+  And see the gcc man page
+ -------------------------------------------------------------------------------
+ gdb
+  GNU Debugger, has ALOT of commands and arguments,
+  see: man gdb.
+ -------------------------------------------------------------------------------
+ gpm
+  gpm is the Linux mouse daemon, it's unspareble when it comes to
+  working an a console, cut & paste is a wonderful thing.
+  gpm works basicly as this: gpm [options]
+  The most common options would be as this:
+  gpm -m /dev/mouse -t ps2
+  This would start a PS/2 mouse, under the conditions that the
+  PS/2 port (/dev/psaux) is linked to the mouse device (/dev/mouse).
+  You can use "gpm -m /dev/psaux -t ps2" just as well.
+  Or if you have a serial mouse no COM1 you can start it like this: 
+
+  gpm -m /dev/cua0 -t ms
+  The -m argument means, the mouse device, and the -t argument is
+  the protocol it's going to use.
+  For a list of all gpm's arguments do: gpm -h
+  And for a list of all the possible mouse protocols, do: gpm -t help
+  The basic console cut & paste functions for a 3 button mouser is: 
+
+  Left button - hold and drag to highlight text (copy's text to memory). 
+
+  Middle button - pastes text that are in memory (see left button) 
+
+  Right button - mark a starting point with a single left click and then
+  mark an end point with the right button to highlight the whole section.
+  Once you get it to work, you may add the line to: /etc/rc.d/rc.local
+ -------------------------------------------------------------------------------
+ grep
+  grep is another of the very powerful commands
+ -------------------------------------------------------------------------------
+ halt
+  This will halt (shutdown -h now) your system.
+ -------------------------------------------------------------------------------
+ hdparm
+  hdparm is a powerful tool to control your hard drives.
+  It works like this: hdparm <arguments> <hard drive>
+  The arguments can be:
+  -a   get/set fs readahead
+  -A   set drive read-lookahead flag (0/1)
+  -c   get/set IDE 32-bit IO setting
+  -C   check IDE power mode status
+  -d   get/set using_dma flag
+  -D   enable/disable drive defect-mgmt
+  -E   set cd-rom drive speed
+  -f   flush buffer cache for device on exit
+  -g   display drive geometry
+  -h   display terse usage information
+  -i   display drive identification
+  -I   read drive identification directly from drive
+  -k   get/set keep_settings_over_reset flag (0/1)
+  -K   set drive keep_features_over_reset flag (0/1)
+  -L   set drive doorlock (0/1) (removable harddisks only)
+  -m   get/set multiple sector count
+  -n   get/set ignore-write-errors flag (0/1)
+  -p   set PIO mode on IDE interface chipset (0,1,2,3,4,...)
+  -P   set drive prefetch count
+  -q   change next setting quietly
+  -r   get/set readonly flag (DANGEROUS to set)
+  -R   register an IDE interface (DANGEROUS)
+  -S   set standby (spindown) timeout
+  -t   perform device read timings
+  -T   perform cache read timings
+  -u   get/set unmaskirq flag (0/1)
+  -U   un-register an IDE interface (DANGEROUS)
+  -v   default; same as -acdgkmnru (-gr for SCSI, -adgr for XT)
+  -V   display program version and exit immediately
+  -W   set drive write-caching flag (0/1) (DANGEROUS)
+  -X   set IDE xfer mode (DANGEROUS)
+  -y   put IDE drive in standby mode
+  -Y   put IDE drive to sleep
+  -Z   disable Seagate auto-powersaving mode
+  Some examples:
+  hdparm -Tt /dev/hda	(Time the cache/device read times)
+  hdparm -c 1 /dev/hda	(This made my HD read the cache twice as fast)
+  hdparm -Yy /dev/hda	(This will totally power down the HD until
+  it's needed, very useful to save power
+  or if you just need a minutes silence)
+  For more info: man hdparm
+ -------------------------------------------------------------------------------
+ head
+  the head command by default brings up the 10 top lines of a file,
+  but can be used with these arguments: 
+
+  -<n>			 where the <n> is the number of lines to get
+  -c, --bytes=SIZE         print first SIZE bytes
+  -n, --lines=NUMBER       print first NUMBER lines instead of first 10
+  -q, --quiet, --silent    never print headers giving file names
+  -v, --verbose            always print headers giving file names
+  --help               display this help and exit
+  --version            output version information and exit
+  Here's some examples:
+  head file
+  head -1 file
+  head -50 file
+  head -c 100 file
+  This command can prove to be very useful.
+ -------------------------------------------------------------------------------
+ help
+  help is a command that shows information on built in commands.
+  like ., cd, jobs, %, test, etc.
+  It works like this: help <command> 
+
+  -------------------------------------------------------------------------------
+ hexdump
+  hexdump is a command that will give a hex dump of any file.
+  For more info on this command do: man hexdump
+ -------------------------------------------------------------------------------
+ hexedit
+  hexedit is a hex editor, very good for debugging binarys,
+  hexedit has alot of internal commands, do: man hexedit
+  for more help on it.
+ -------------------------------------------------------------------------------
+ hostname
+  With no arguments it displays the current hostname.
+  But can also set a new hostname, here are it's arguments:
+  -s, --short           short host name
+  -a, --alias           alias names
+  -i, --ip-address      addresses for the hostname
+  -f, --fqdn, --long    long host name (FQDN)
+  -d, --domain          DNS domain name
+  -y, --yp, --nis       NIS/YP domainname
+  -F, --file            read hostname or NIS domainname from given file
+  Here's an example if you wanna change your hostname: 
+
+  hostname -F /etc/HOSTNAME
+ -------------------------------------------------------------------------------
+ id
+  Shows you a users ID, default your user UID, GID and group name.
+  The command has some arguments it can be used with, like this:
+  id [argument] <user>
+  Here are the arguments:
+  -a              ignore, for compatibility with other versions
+  -g, --group     print only the group ID
+  -G, --groups    print only the supplementary groups
+  -n, --name      print a name instead of a number, for -ugG
+  -r, --real      print the real ID instead of effective ID, for -ugG
+  -u, --user      print only the user ID
+  --help      display this help and exit
+  --version   output version information and exit
+  So `id -u` will return '0' if you are root (same as `echo $UID`).
+ -------------------------------------------------------------------------------
+ ifdown
+  ifdown is a command that will let you shutdown (deactivate) any
+  ethernet device. I works as this: ifdown <device>
+  So say that you have an eth0 running that you wanna shut down, then
+  you just do this: ifdown eth0
+  For more info on how to set up an ethernet device,
+  see section 7 (Networking) in this tutorial. 
+
+  -------------------------------------------------------------------------------
+ ifup
+  ifup works the same as ifdown, but activates the ethernet device
+  rather then deactivate it.
+  For more info on how to set up an ethernet device,
+  see section 7 (Networking) in this tutorial.
+ -------------------------------------------------------------------------------
+ init
+  init sets the runlevel for you.
+  If you have read the whole of this tutorial to this point you know
+  about where to look for what they mean.
+  So if you do: init 0
+  The system will shutdown and halt there.
+  And if you type: init 6
+  The system will reboot, etc.
+ -------------------------------------------------------------------------------
+ insmod
+  insmod tries to installs a loadable module in the running kernel.
+  It works like this:  
+
+  insmod [arguments] <-o module_name> object_file [ sym-bol=value ... ] 
+
+  Here are the possible arguments:
+  -f, --force         Force loading under wrong kernel version
+  -k, --autoclean     Make module autoclean-able
+  -m                  Generate load map (so crashes can be traced)
+  -o NAME
+  --name=NAME     Set internal module name to NAME
+  -p, --poll          Poll mode; check if the module matches the kernel
+  -s, --syslog        Report errors via syslog
+  -v, --verbose       Verbose output
+  -V, --version       Show version
+  -x                  Do not export externs
+  -X                  Do export externs (default)
+  An example of how to use this is:
+  insmod -o 3c90x /lib/modules/2.2.14/net/3c90x.o
+  This would load the 3c90x.o module with 3c90x as name.
+ -------------------------------------------------------------------------------
+ install
+  install is a command that installs a file properly,
+  it works like this: install [arguments] source destination
+  The arguments can be any of the following:
+  -b, --backup
+  make backup before removal
+  -c
+  (ignored) 
+
+  -d, --directory
+  treat all arguments as directory names; create all
+  components of the specified directories 
+
+  -D
+  create all leading components of DEST except the last,
+  then copy SOURCE to DEST;  useful in the 1st format 
+
+  -g, --group=GROUP
+  set group ownership, instead of process' current group 
+
+  -m, --mode=MODE
+  set permission mode (as in chmod), instead of rwxr-xr-x 
+
+  -o, --owner=OWNER
+  set ownership (super-user only) 
+
+  -p, --preserve-timestamps
+  apply access/modification times of SOURCE files to
+  corresponding destination files 
+
+  -s, --strip
+  strip symbol tables, only for 1st and 2nd formats 
+
+  -S, --suffix=SUFFIX
+  override the usual backup suffix 
+
+  --verbose
+  print the name of each directory as it is created 
+
+  -V, --version-control=WORD
+  override the usual version control 
+
+  --help
+  display the help and exit
+  So if we have a file called foo and we want to install it in
+  /usr/local/bin/, and we want it to have the following permission line:
+  -rwxr-x---, then we want it to belong to the group ftp, then
+  we do like this: 
+
+  install -m 750 foo -g ftp /usr/local/bin/  
+
+  We could also use:
+  install -m u+rwx,g+rx foo -g ftp /usr/local/bin/
+  Which would produce the same permission line.
+  The install command is good to use if you ever do anything that
+  needs to be installed to the system, in a proper way.
+ -------------------------------------------------------------------------------
+ ipchains
+  ipchains is a firewall/wrapper that has ALOT of argument,
+  it's one of those huge commands, do: man ipchains
+  for more information on this command.
+ -------------------------------------------------------------------------------
+ ispell
+  Interactive Spell check, this is a useful little command,
+  it's basic usage is: ispell <file>
+  It has the following commands:
+  R       Replace the misspelled word completely.
+  Space   Accept the word this time only.
+  A       Accept the word for the rest of this session.
+  I       Accept the word, and put it in your private dictionary.
+  U       Accept and add lowercase version to private dictionary.
+  0-n     Replace with one of the suggested words.
+  L       Look up words in system dictionary.
+  X       Write the rest of this file, ignoring misspellings,
+  and start next file.
+  Q       Quit immediately.  Asks for confirmation.
+  Leaves file unchanged.
+  !       Shell escape.
+  ^L      Redraw screen.
+  ^Z      Suspend program.
+  ?       Show the help screen.
+  Just run it on a file and test it for your self.
+ -------------------------------------------------------------------------------
+ kill
+  kill is a very powerful command that can (if you're root)
+  kill any running process no the system.
+  it works as: kill -<signal> <PID>
+  Pid is short for Process ID, which you get with the `ps` command. 
+
+  The signals can be any of the following: 
+
+  POSIX signals:
+  Signal     Value     Action   Comment
+  ----------------------------------------------------------------------
+  SIGHUP        1        A     Hangup detected on controlling terminal
+  or death of controlling process
+  SIGINT        2        A     Interrupt from keyboard
+  SIGQUIT       3        C     Quit from keyboard
+  SIGILL        4        C     Illegal Instruction
+  SIGABRT       6        C     Abort signal from abort(3)
+  SIGFPE        8        C     Floating point exception
+  SIGKILL       9       AEF    Kill signal
+  SIGSEGV      11        C     Invalid memory reference
+  SIGPIPE      13        A     Broken pipe: write to pipe with no readers
+  SIGALRM      14        A     Timer signal from alarm(2)
+  SIGTERM      15        A     Termination signal
+  SIGUSR1   30,10,16     A     User-defined signal 1
+  SIGUSR2   31,12,17     A     User-defined signal 2
+  SIGCHLD   20,17,18     B     Child stopped or terminated
+  SIGCONT   19,18,25           Continue if stopped
+  SIGSTOP   17,19,23    DEF    Stop process
+  SIGTSTP   18,20,24     D     Stop typed at tty
+  SIGTTIN   21,21,26     D     tty input for background process
+  SIGTTOU   22,22,27     D     tty output for background process
+  Non-POSIX signals:
+  Signal       Value     Action   Comment
+  ----------------------------------------------------------------------
+  SIGBUS      10,7,10      C     Bus error (bad memory access)
+  SIGPOLL                  A     Pollable event (Sys V). Synonym of SIGIO
+  SIGPROF     27,27,29     A     Profiling timer expired
+  SIGSYS      12,-,12      C     Bad argument to routine (SVID)
+  SIGTRAP        5         C     Trace/breakpoint trap
+  SIGURG      16,23,21     B     Urgent condition on socket (4.2 BSD)
+  SIGVTALRM   26,26,28     A     Virtual alarm clock (4.2 BSD)
+  SIGXCPU     24,24,30     C     CPU time limit exceeded (4.2 BSD)
+  SIGXFSZ     25,25,31     C     File size limit exceeded (4.2 BSD)
+  Other signals:
+  Signal       Value     Action   Comment
+  -------------------------------------------------------------------
+  SIGIOT         6         C     IOT trap. A synonym for SIGABRT
+  SIGEMT       7,-,7
+  SIGSTKFLT    -,16,-      A     Stack fault on coprocessor
+  SIGIO       23,29,22     A     I/O now possible (4.2 BSD)
+  SIGCLD       -,-,18            A synonym for SIGCHLD
+  SIGPWR      29,30,19     A     Power failure (System V)
+  SIGINFO      29,-,-            A synonym for SIGPWR
+  SIGLOST      -,-,-       A     File lock lost
+  SIGWINCH    28,28,20     B     Window resize signal (4.3 BSD, Sun)
+  SIGUNUSED    -,31,-      A     Unused signal (will be SIGSYS) 
+
+  When you use the kill you can either use the numeric code, as
+  say that we have a PID 1234 that we wanna kill, then we can either
+  do: kill -9 1234 or we can do: kill -KILL 1234
+  So you don't have to include that leading SIG in the signals
+  when you use them by name.
+ -------------------------------------------------------------------------------
+ killall
+  killall is the same as kill but kills processes by name,
+  As say that you have 10 processes running all named: httpd
+  and you wanna kill them all in one command.
+  Then: killall -9 httpd  would be the way to go about it.
+ -------------------------------------------------------------------------------
+ lastlog
+  lastlog is a command that shows you a list of the users and when
+  they last logged in, from what host and on which port.
+  lastlog can be used with the following arguments: 
+
+  -u	username
+  -t	number of days
+  so if I wanna check if a user named 'user' has logged in during
+  the last 50 days I do: lastlog -u user -t 50
+ -------------------------------------------------------------------------------
+ ldconfig
+  ldconfig updates the list of directory's in where library's can be
+  found as /lib and /usr/lib, if you wanna add a directory to this you
+  can add them in /etc/ld.so.conf
+  By just typing `ldconfig` you will update this, but it can
+  also be executed with more arguments, for more info on this
+  command do: man ldconfig
+  Just note that this is not really a command that you will use
+  every day.
+ -------------------------------------------------------------------------------
+ ldd
+  ldd can check what librarys a dynamicly executable file needs.
+  and it can have the following switches:
+  --help                  print this help and exit
+  --version               print version information and exit
+  -d, --data-relocs       process data relocations
+  -r, --function-relocs   process data and function relocations
+  -v, --verbose           print all information
+  It works like this: 
+
+  ldd <file> 
+
+  Example: 
+
+  ldd /sbin/ifconfig
+ -------------------------------------------------------------------------------
+ less
+  less is more then more ..... ummmm
+  less works a bit like cat but it will stop at each screen and you
+  can scroll up and down in the file to view it's contents,
+  it works basicly like this: less <textfile>
+  Do a: less --help
+  For a full index of it's commands, and note that you get out
+  of less by pressing the letter 'q'.
+ -------------------------------------------------------------------------------
+ lilo
+  lilo is the LInux LOader, and is on most distros the default
+  boot loader, with lilo you can rewrite your boot sector and
+  everything that involves your booting or switching between
+  several installed operating systems, lilo's configuration file
+  is /etc/lilo.conf
+  for more info about lilo and what lilo can do do: man lilo
+ -------------------------------------------------------------------------------
+ ln
+  link, with ln you can link any file, this is essential to *nix
+  as, say that you have a config file that needs to be in the same
+  dir as it's program but you want it in /etc with all the other
+  configuration files, then you can link it to /etc so the link
+  appears in /etc and works just like the real file.
+  Usually ln is used to set symbolic links (sym links) where you
+  can see the difference of the link and the file and you can remove
+  the link without it affecting the real file.
+  A symbolic link is set in this way: ln -s file link
+ -------------------------------------------------------------------------------
+ lndir
+  link directory, about the same as ln but links directory's,
+  see the: man lndir
+ -------------------------------------------------------------------------------
+ loadkeys
+  loadkeys, basicly works like: loadkeys /usr/lib/kbd/keymaps/<keymap>
+  but also has some arguments (that I never used), if you want
+  more info: man loadkeys
+ -------------------------------------------------------------------------------
+ locate
+  locate can locate any file that's read into a database,
+  you update this database if you as root type: updatedb
+  locate works basicly like: locate <whatever-you-wanna-find>
+  but can be executed with alot of arguments, do: locate --help
+  or for more info: man locate
+ -------------------------------------------------------------------------------
+ logout
+  logout does what it says, it logs you off the shell.
+ -------------------------------------------------------------------------------
+ lpq
+  line printer que, checks if you have any printer jobs on que. 
+
+  -------------------------------------------------------------------------------
+ lpr
+  line printer, has alot of commands, but basicly works as: lpr <file>
+  to print a file, the lpr command has alot of arguments,
+  do: man lpr for more info. 
+
+  -------------------------------------------------------------------------------
+ lprm
+  line printer remove, removes any qued jobs (lpq) by there entry number.
+ -------------------------------------------------------------------------------

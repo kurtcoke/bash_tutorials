@@ -1,0 +1,808 @@
+4 - Other techniques
+
+===============================================================================
+4 - Other techniques.
+===============================================================================
+
+Now let's move on to a little bit more advanced shell scripting.
+Actually it's not that advanced, just more hard to keep in order, but let us
+leave that to the head of the beholder..... errr
+Anyway, let's not make this harder then it is, so here we go, with a script
+example:
+
+-------------------------------------------------------------------------------
+#!/bin/bash
+
+> file1.c
+
+cat >> file1.c << EOF
+#include <stdio.h>
+int main ( void )
+{
+  printf("Hello worldn");
+  return 0;
+}
+EOF
+
+cc file1.c -o file1 || gcc -o file1 file1.c
+./file1
+
+rm -f file1.c file1
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+And here as follows, is an semi-english translation of the script:
+
+echo nothing to file1.c to create it.
+
+cat to file1.c what comes here after in between the "EOF"'s
+// --- a short hello world program in C code --- //
+
+try if there is a 'cc', if not then use 'gcc'
+Execute the newly compiled file
+
+remove file1.c and file1
+
+exit the script.
+
+-------------------------------------------------------------------------------
+
+This can be very useful, since bash do have it's limitations, so if you
+ever need something more powerful or just something else, you can always
+do like the script told.
+
+Another little trick with the same thing in a script is:
+
+more << EOF
+Here you can type whatever,
+like an agreement text or something.
+EOF
+
+Play around with it.
+
+-------------------------------------------------------------------------------
+
+Here let's have a look at the "case" command, case is like "if" ended
+with it self backwards.
+So that what starts with "case" ends with "esac", here's an example of "case":
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+case "$1" in
+    foo)
+    echo "foo was written"
+    ;;
+    bar)
+    echo "bar was written"
+    ;;
+    something-else)
+    echo "something-else was written"
+    ;;
+esac
+
+-------------------------------------------------------------------------------
+
+This is the same as saying:
+
+....
+if [ "$1" = "foo" ];then
+echo "foo written"
+fi
+if [ "$1" = "bar" ];then
+echo "bar was written"
+fi
+
+etc.
+....
+
+so case is far shorter if you have alot of arguments.
+
+Here's a better example:
+
+-------------------------------------------------------------------------------
+#!/bin/bash
+
+case "$1" in
+    --help)
+    echo "Usage: $0 [--help] [--port <port>] <host> [--time]"
+    ;;
+    --port)
+    telnet $3 $2
+    ;;
+    --time)
+    date
+    ;;
+esac
+
+-------------------------------------------------------------------------------
+
+This is not very hard to learn,
+case the first argument vector ($1) in
+firt-possible-match)
+if it matches do ........
+close the ) with ;;
+etc. down to "esac"
+
+Really not much more to say about the case command at this point.
+
+-------------------------------------------------------------------------------
+
+Now let's have a REALLY quick look at the command `sed`, which is used
+to format text. say now that you have a file called "tmp" that
+contains the following:
+
+http://www.metacrawler.com
+http://www.yahoo.com
+http://www.webcrawler.com
+
+and you want to change all the "www"'s to "ftp", then you do like this:
+
+sed 's/www/ftp/g' tmp
+
+and if you want to store the changes to a file you can do:
+
+sed 's/www/ftp/g' tmp > tmp2
+
+This is not sed's only use, but for sure it's what it's most used for.
+
+Here's just one other really simple thing sed could be used as:
+
+sed -n 3 p /etc/passwd
+
+This will print out the 3'd line of the /etc/passwd file.
+
+-------------------------------------------------------------------------------
+
+Now let's take up a really interesting command `dialog`, that is a command
+with which you can create ncurses dialog boxes.
+Ncurses dialog boxes are what one would call 'console graphics' or
+'ascii color graphics', if you ever seen a blue background and a gray box
+asking questions, with an <OK> and <Cancel> button, while running
+something in a console you have seen an ncurses dialog box.
+
+Now here is a small script example of a dialog box:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+dialog --backtitle "My first dialog"
+       --title "Main menu"
+       --menu "Make your choice" 13 60 6
+        1 "First option"
+        2 "Second option"
+        3 "Exit" 2> .tempfile
+        output=`cat .tempfile`
+        rm -f .tempfile
+
+if [ "$output" = "1" ]; then
+dialog --msgbox "First option was entered" 5 40
+fi
+
+if [ "$output" = "2" ]; then
+dialog --msgbox "Second option was entered" 5 40
+fi
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Here is another very small example with dialog boxes:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+dialog --yesno "Do you agree, jada jada" 10 50 &&
+dialog --yesno "ok you agreed" 10 50 ||
+dialog --yesno "ok fine, leav then ..." 10 50
+
+-------------------------------------------------------------------------------
+
+If the first one (Do you agree, jada jada) returns 'true' (yes)
+then it walks on to the next (ok you agreed),
+and if any of those first two returns 'false' (no) it will display
+the last (ok fine, leav then ...).
+
+-------------------------------------------------------------------------------
+
+Notes: The back slashes "\" are used to say "no new line" as in what comes
+       on the next line will be treated as if it were on the same line as
+       the last line, the "\" really means that the next character's
+       (in this case the new lines) special meaning is overlocked.
+
+       Just in case you didnt understand, the numbers after, like 10 50:
+       dialog --yesno "ok fine, leav then ..." 10 50
+       is the geometry of the window.
+       First number is height and the second width.
+
+       Another note being that the command `Xdialog` works the same as
+       dialog, but I wont take that up here because it doesn't come as default
+       with any other Linux distribution then Mandrake, as far as I know.
+
+       A final note is that the `dialog` command is getting to be out dated
+       but is still the most used, the newer version of it is named `whiptail`
+       and works the same as `dialog`, but looks slightly different.
+
+-------------------------------------------------------------------------------
+
+Now we have covered most of it, so let's take up some small tricks, that bash
+allows you to do, here follows what it does, and then the code example:
+
+Here we wanna check if you have a directory called "/usr/local/bin":
+
+if [ -d /usr/local/bin ]; then
+cp file /usr/local/bin/
+else
+echo "NO !!"
+fi
+
+Another way of doing the same thing is this:
+
+test -d /usr/local/bin && cp file /usr/local/bin/ || echo "NO !!"
+
+Or:
+
+ls /usr/local/bin/ && cp file /usr/local/bin/ || echo "NO !!"
+
+The last way is a bit messy, but alot smaller then the first one,
+but here's yet another way that's small and less messy:
+
+ls /usr/local/bin/ 1>/dev/null 2>&1 && cp file /usr/local/bin/ || echo "NO !!"
+
+That might look really weird at first sight, but it's easy if you break it
+down and look at it:
+
+ls /usr/local/bin/ <<==== lists /usr/local/bin/
+1>/dev/null        <<==== sends the contents of the listing to 'the black hole'
+2>&1               <<==== sends any errors the same way... to 'the black hole'
+			  (same thing as to say 2>/dev/null)
+
+&&                 <<==== if the first command worked, we will go on here.
+cp file /usr/local/bin/   <<==== copy file to /usr/local/bin/
+||                 <<==== if the  first command didn't work...
+			  we go on here instead.
+echo "NO !!"       <<==== what it says ... say NO !!
+
+as this:
+If `ls` can list /usr/local/bin/ next command can be executed, OR if not
+it will echo "NO !!", and all listings/errors are being sent to /dev/null
+the 'black hole' of a UNIX/Linux. 
+
+-------------------------------------------------------------------------------
+
+To prevent that a script is being executed more the once at the same time
+for some reason you may wanna let the script make a 'lock' file.
+This is very easy to do:
+
+#!/bin/bash
+ls script.lock 1>/dev/null 2>&1 && exit 0 && echo "lockfile detected"
+> script.lock
+echo "Here is where the script should be"
+rm -f script.lock
+exit 0
+
+Here we first check if there is a lockfile, and if there is we terminate
+the script and say that a lockfile was detected.
+If there is no lockfile, we create one and start to execute the rest of the
+script.
+At the end of the script we remove the lockfile, so that the script can
+be executed again.
+All this is just to prevent the same script to be run twice at the same time,
+which can be a good thing if your script does something that cant be done
+twice at the same time, as mounting a hard drive/cd-rom, using sound or
+anything like that.
+
+Another neat little trick is if you from within a script are going to
+create temporary files that you want unique (to not overwrite some other
+files anywhere, wherever the script may get executed) you can do like this:
+
+#!/bin/bash
+echo "ls" >.tmp.$$
+echo "-la" >.tmp2.$$
+one=`cat .tmp.$$`
+two=`cat .tmp2.$$`
+$one $two
+rm -f .tmp.$$ .tmp2.$$
+
+This will make a file called .tmp.<pid of script> containing the word "ls",
+then it will make a file called .tmp2.<pid of script> containing "-la".
+After that it make 2 variables, each one when being called will `cat` one
+of the .tmp.* files each.
+At the end we have "$one $two" that will work the same as if we had printed:
+
+ls -la
+
+And last we remove the temporary files.
+
+This is useful if your doing a script that requires you to move around alot
+of text from one file to another and back, as this example:
+
+#!/bin/bash
+
+sed 's/www/ftp/g' tmp > .tmp.$$
+sed 's/com/org/g' .tmp.$$ > .tmp2.$$
+sed 's/ /_/g' .tmp2.$$ > .tmp3.$$
+mv -f .tmp3.$$ tmp
+rm -f .tmp.$$ .tmp2.$$ .tmp3.$$
+
+exit 0
+
+Here we change all www's in a file (tmp) to ftp, then we change all com's
+to org, and then all spaces to underscores.
+After that we move the fully changed file so it overwrites the original file.
+Then removing the temporary files and exit the script.
+
+If you have a good look at it, it's really easy.
+
+Another nice trick is as I showed in the example prior to the last one:
+
+...
+one=`cat .tmp.$$`
+two=`cat .tmp2.$$`
+...
+
+That a variable can hold a command can prove to be useful, like this:
+
+#!/bin/bash
+time=`date +%H:%M:%S`
+
+echo "$time" >> log
+echo "some input to the log" >> log
+sleep 60
+echo "$time" >> log
+echo "some input to the log a minute later" >> log
+
+exit 0
+
+But, it can hold more then just a command, it can actually *hold* the contents
+of a whole file.
+Say now that you made a script and have a pretty large readme file, and want
+to display that as a 'man page' to the script if the argument `--help`
+is used to execute the script, then you can do like this:
+
+#!/bin/bash
+one="$1"
+help=`cat README`
+
+if [ "$one" = "--help" ]; then
+$help | more
+...
+
+Ofcorce it would be easier to say:
+
+#!/bin/bash
+if [ "$?" = "--help" ]; then
+more README
+fi
+
+But these examples are just here for illustration so you get the point
+of usage for commands and so.
+
+Another trick is, if you wanna hide script/program you can rename it to:
+-bash, that way it will look as a normal bash running in the `ps`
+(process list), you rename it by doing:
+
+mv script ./-bash
+
+Then execute it like normal ./-bash
+
+Yet another trick, is if you're doing a script where you want each line
+of a file as a variable, unlike for that takes each word as a variable.
+This can be done like this:
+
+#!/bin/bash
+file="$1"
+min="0"
+max=`cat $file | wc -l`
+
+if [ "$1" = "" ]; then
+echo "Usage: $0 <file>"
+exit -1
+fi
+
+while [ "$min" != "$max" ]; do min=`expr $min + 1`
+curline=`head -$min $file | tail -1`
+echo $curline
+test $min -eq $max && exit 0
+done
+
+The `test` is there to make sure that it will end when $min and $max are the
+same.
+Now this can be done with `for` if you change IFS (described later), but that
+is not recomended, especially if you export IFS since that would change the
+enviorment and hence screw with the system scripts if they were to be runned
+before changing IFS back to normal, but enough about that now, just keep
+it somewhere far back in your head, dont change IFS unless you know what
+you're doing.
+
+If you dont understand this little script at this point, dont worry, you
+will understand it the second time you read this tutorial =)
+
+-------------------------------------------------------------------------------
+
+Now let's take a quick look at arrays in shell scripting.
+First off, an array is what it says, it's an array of something,
+now, to declare a variable that can hold an array we create it with the
+command `declare`, let's make a short example:
+
+alien:~$ declare -a foo=(1 2 3 4 5)
+alien:~$ echo ${foo[0]}
+1
+alien:~$ echo ${foo[1]}
+2
+alien:~$ foo[1]=bar
+alien:~$ echo ${foo[1]}
+bar
+alien:~$
+
+First of all, to understand the declare command better do `help declare`
+at a console and it'll desplay this:
+
+declare: declare [-afFrxi] [-p] name[=value] ...
+    Declare variables and/or give them attributes.  If no NAMEs are
+    given, then display the values of variables instead.  The -p option
+    will display the attributes and values of each NAME.
+
+    The flags are:
+
+      -a        to make NAMEs arrays (if supported)
+      -f        to select from among function names only
+      -F        to display function names without definitions
+      -r        to make NAMEs readonly
+      -x        to make NAMEs export
+      -i        to make NAMEs have the `integer' attribute set
+
+    Variables with the integer attribute have arithmetic evaluation (see
+    `let') done when the variable is assigned to.
+
+    When displaying values of variables, -f displays a function's name
+    and definition.  The -F option restricts the display to function
+    name only.
+
+    Using `+' instead of `-' turns off the given attribute instead.  When
+    used in a function, makes NAMEs local, as with the `local' command.
+
+So here we see that the -a switch to declare makes the variable an array.
+So after getting that `declare -a` we declare the variable as an array,
+with the array within paranteses.
+
+And then to make use of it, we use the way to write a variable like this:
+${ variable name here }
+and the number inside the []'s is the number that points to which part of
+the array it should use, begining from 0 which is the first.
+
+Let's make another short example:
+declare -a foo=(this is another example)
+echo "The array (${foo[*]}) has (${foo[0]}) as first, and (${foo[3]}) as last."
+
+The output of this would be:
+The array (this is another example) has (this) as first, and (example) as last.
+
+Now, this isn't something you'll use in every day scripting, but it's still
+something you should know the existance of, just in case you see it or need
+it at some point.
+
+-------------------------------------------------------------------------------
+
+Now here's a less common way of using bash, CGI scripts.
+Most people dont assosiate shell scripting with cgi, but it works
+just as well as any other language, so here I'd like to to show
+you how to make CGI scripts in bash.
+
+-------------------------------------------------------------------------------
+
+Here is the first example which is a simple cgi counter in bash.
+A note is that all CGI scripts should be in the servers cgi-bin directory
+or any subdirectory there off, unless the server is configured to see
+any other directorys as cgi directorys.
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+test -f date.txt || echo `date "+%B %d %Y"` > date.txt
+test -f counter.txt || echo '0' > counter.txt
+current=`cat counter.txt`
+date=`cat date.txt`
+visitor=`expr $current + 1`
+
+echo "$visitor" > counter.txt
+echo 'Content-type: text/html'
+echo ''
+echo '<br>Vitor:'
+echo '<br>'$visitor'<br>Since'
+echo '<br>'$date'</br>'
+
+-------------------------------------------------------------------------------
+
+Let's take this one line by line here:
+
+First the shell ....
+#!/bin/bash
+
+Then we test if there is a file called date.txt, if not then we echo the
+current date to it and hence creating it.
+test -f date.txt || echo `date "+%B %d %Y"` > date.txt
+
+Then we test if there is a file called counter.txt and if not we echo a 0
+to it and so create that one too.
+test -f counter.txt || echo '0' > counter.txt
+
+Now we declare the variables, current is the contents of counter.txt.
+current=`cat counter.txt`
+
+The date variable is the contents of date.txt.
+date=`cat date.txt`
+
+And visitor is the sum of the contents of counter.txt + 1.
+visitor=`expr $current + 1`
+
+And then we echo the new increased number to counter.txt.
+echo "$visitor" > counter.txt
+
+And here comes the HTML part. the first to line is the 'cgi header'
+those should ALWAYS be there:
+echo 'Content-type: text/html'
+echo ''
+
+Then we move on to the *real* html:
+echo '<br>Vitor:'
+echo '<br>'$visitor'<br>Since'
+echo '<br>'$date'</br>'
+
+The <br> is a linebreak in html
+The bash variables have to be *ouside* the 's else they will simply show
+up as $visitor or $date litterly, that's why it's made like this:
+echo 'text' $variable 'some more text'
+So that the text is enclosed with 's, but the variables are between or rather
+outside of them.
+Anyway, this cgi will create a section that looks like this on a webpage:
+
+----------------
+   Vitor:
+     1
+   Since
+May 29 2001
+----------------
+
+To add that to a html code you add this tag to your html/shtml page:
+
+<!--#exec cgi="<path to counter>" -->
+
+With the path to the counter it could look like this:
+
+<!--#exec cgi="/cgi-bin/counter/counter.cgi" -->
+
+Not so hard is it ?
+
+-------------------------------------------------------------------------------
+
+Here is another example of a CGI script in bash (actually the second CGI
+script I ever made).
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+method=`echo $QUERY_STRING | awk -F'=' '{print $1}'`
+host=`echo $QUERY_STRING | awk -F'=' '{print $2}'`
+
+if [ "$method" = "nslookup" ]; then
+echo 'Content-type: text/html'
+echo ''
+echo '<html>'
+echo '<body bgcolor="white">'
+echo '<center>'
+echo '<br>nslookup '$host' (This might take a second)<br>'
+echo '<hr width="100%">'
+echo '</center>'
+echo '<pre>'
+nslookup $host
+echo '</pre>'
+echo '<center>'
+echo '<hr width="100%">'
+echo '<br>nslookup compleat'
+echo '</center>'
+echo '</body>'
+echo '</html>'
+fi
+
+if [ "$method" = "ping" ]; then
+echo 'Content-type: text/html'
+echo ''
+echo '<html>'
+echo '<body bgcolor="white">'
+echo '<center>'
+echo '<br>ping '$host' (This might take a second)<br>'
+echo '<hr width="100%">'
+echo '</center>'
+echo '<pre>'
+ping -c 5 $host
+echo '</pre>'
+echo '<center>'
+echo '<hr width="100%">'
+echo '<br>ping compleat'
+echo '</center>'
+echo '</body>'
+echo '</html>'
+fi
+
+if [ "$method" = "scan" ]; then
+echo 'Content-type: text/html'
+echo ''
+echo '<html>'
+echo '<body bgcolor="white">'
+echo '<center>'
+echo '<br>Scanning host '$host' (This might take a minute)<br>'
+echo '<hr width="100%">'
+echo '</center>'
+echo '<pre>'
+nmap $host
+echo '</pre>'
+echo '<center>'
+echo '<hr width="100%">'
+echo '<br>Scan compleat'
+echo '</center>'
+echo '</body>'
+echo '</html>'
+fi
+
+-------------------------------------------------------------------------------
+
+Now let's take a look at what that means:
+
+-------------------------------------------------------------------------------
+
+This time it wont be all the lines, but all the new parts:
+
+First the 2 variables:
+method=`echo $QUERY_STRING | awk -F'=' '{print $1}'`
+host=`echo $QUERY_STRING | awk -F'=' '{print $2}'`
+
+These are made this way because of how the CGI script imports the variables
+from a form (I'll come back to this), the $QUERY_STRING variable is
+from the webservers enviorment, and so is one of the httpds env variables.
+
+And what you do with the $QUERY_STRING is depending on how you create
+your web form .... but as I said I'll get back to that.
+
+Now the rest:
+
+if [ "$method" = "nslookup" ]; then
+
+That was pretty obvious .... if the first feild of $QUERY_STRING (separated
+by a =, is "nslookup", then go ahead here:
+
+echo 'Content-type: text/html'
+echo ''
+
+Yes the header ....
+
+echo '<html>'
+echo '<body bgcolor="white">'
+echo '<center>'
+echo '<br>nslookup '$host' (This might take a second)<br>'
+echo '<hr width="100%">'
+echo '</center>'
+echo '<pre>'
+
+Create a HTML page ... and then after the <pre> we do the actual center part
+of the script:
+
+nslookup $host
+
+Which will resolve the DNS of the host (try the command and see),
+And after that we end the html page:
+
+echo '</pre>'
+echo '<center>'
+echo '<hr width="100%">'
+echo '<br>nslookup compleat'
+echo '</center>'
+echo '</body>'
+echo '</html>'
+
+and then end the if statement:
+
+fi
+
+and then the same for the others, just diffent objects at what they should
+do, as this was nslookup, the other sections will mnap (portscan) and ping
+the host instead.
+
+Now how would a full HTML page look to make use of this cgi script ?
+As we this time need input to get the host or IP to scan/ping/nmap.
+
+Well like this:
+
+-------------------------------------------------------------------------------
+
+<html>
+<body bgcolor="white">
+<center>
+<p><font size="+1">Enter host or IP</font></p>
+<hr width="100%">
+<br>
+<form action="http://www.yourdomain.com/cgi-bin/scan.cgi" method="get">
+
+<input type="text" name="scan" value="" size="30">
+<input type="submit" value="portscan">
+</form>
+<p>
+<form action="http://www.yourdomain.com/cgi-bin/scan.cgi" method="get">
+<input type="text" name="nslookup" value="" size="30">
+<input type="submit" value="nslookup">
+</form>
+<p>
+
+<form action="http://www.yourdomain.com/cgi-bin/scan.cgi" method="get">
+<input type="text" name="ping" value="" size="30">
+<input type="submit" value="ping -c 5">
+</form>
+</center>
+</body>
+</html>
+
+-------------------------------------------------------------------------------
+
+Now what does all this mean ? ....
+Well, I wont turn this into a HTML tutorial, but I'll explain this so you
+can make use of bash for CGI.
+
+Right to the important HTML part here:
+
+<form action="http://www.yourdomain.com/cgi-bin/scan.cgi" method="get">
+
+<input type="text" name="scan" value="" size="30">
+<input type="submit" value="portscan">
+</form>
+
+Here we create a form, as in an input feild, which will add it's input
+(in a specific way) to the end of the url in action="".
+the method is get since we're getting the output of the cgi script.
+we name this feild scan so we get the output this way:
+?scan=<input>
+Where the <input> is what you typed in the input box.
+And then we make an "ok" button that says "portscan".
+So if you type say 127.0.0.1 and press the portscan button the URL it will
+be directed to is this:
+
+http://www.yourdomain.com/cgi-bin/scan.cgi?scan=127.0.0.1
+
+And this "scan=127.0.0.1" will be the $QUERY_STRING enviormental variable.
+
+And so the script is starting to make sense.
+
+-------------------------------------------------------------------------------
+
+Here's a REALLY simple cgi script just for the illustration aswell.
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+string="Hello World"
+
+echo 'Content-type: text/html'
+echo ''
+echo '<html>'
+echo '<br>'$string'</br>'
+echo '</html>'
+
+-------------------------------------------------------------------------------
+
+And the html to call that ..... just a normal hyper link.
+
+<a href="http://www.yourdomain.com/cgi-bin/yourscript.cgi">Link</a>
+
+And that's it.
+
+-------------------------------------------------------------------------------
+
+That's it on the tricks, now let's move on to practical examples so you get
+a little bit of feel for how you can use bash to make things easier for you

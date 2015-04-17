@@ -1,0 +1,377 @@
+5 - Practical Scripting Examples
+
+===============================================================================
+5 - Practical Scripting Examples.
+===============================================================================
+
+I'd first like to add a note which you already probably knows:
+./ == look in current directory instead of the "PATH".
+To give that an example, say now that you have a script in your home
+directory called "ls" or "dir", how would you execute that without
+getting the contents of the directory ?
+well, that's why you use "./"  before a name to execute it if it's in the
+current directory.
+../ == previous directory (one directory further up towards "/" then you are
+currently in), this can be used as this, say that you have a script called
+"script" in "/home/user/" and you are standing in "/home/user/nice/" and
+you don't want to leave the directory but still want to execute the script.
+Then you do, "../script" and if you are in "/home/user/nice/blah/" you
+you would do, "../../script" ----- "../../" == 2 directory's back.
+Get the idea ?
+
+Anyway, now to the practical examples, which are working scripts for
+various purposes, to give an idea about what you can do with shell scripting.
+New things previously not explained will show up in this section, but
+I will explain them as we go along.
+
+Let's start with simple examples and move on to harder parts.
+As for first I'll stick to useless scripts =) just for illustration.
+Explanation on the scripts follow after them, as usual.
+So here we go on that.
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+one="$1"
+something="$2"
+
+if [ "$one" = "" ]; then
+echo "Usage: $0 [name] <anything goes here>"
+exit 0
+fi
+
+function first {
+clear
+echo "this is a test script !"
+echo
+echo "name followed on $0 was - $one - "
+echo
+echo "if you typed anything after the name it was: $something"
+echo
+}
+
+first
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Executed without any thing after the script name it looks like this:
+
+alien:~$ ./script
+Usage: ./script [name] <anything goes here>
+alien:~$
+
+Executed with a name it looks like this:
+
+alien:~$ ./script Jerry
+----------------------------------------
+this is a test script !
+
+name followed on ./script was - Jerry -
+
+if you typed anything after the name it was:
+
+alien:~$
+
+Executed with a name and something else it looks like this:
+
+alien:~$ ./script Jerry homer
+---------------------------------------
+this is a test script !
+
+name followed on ./script was - Jerry -
+
+if you typed anything after the name it was: homer
+
+alien:~$
+
+-------------------------------------------------------------------------------
+
+Notes: $0 == the script name's variable so you can do a "Usage: <scriptname>"
+       whatever the script is named after you made it.
+       $1 == the first thing that's typed after the script in the command line
+       $2 == the second thing that's typed after the script in the command line
+       $3, $4 and so on .....
+
+       one="$1" this puts the contents of "$1" into the variable $one
+       which can be very useful to avoid errors.
+
+       clear == clears the screen
+
+-------------------------------------------------------------------------------
+
+This next example is a script which you really shouldn't use...
+It's here as an example for a working help script, but *could*
+cause harm if not used correctly.
+So if you loose anything because of using it, it's all on you.
+and don't say I didn't warn you.
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+if whoami | grep -v root >> /dev/null; then
+    echo "you have to be root to use this"
+ exit 1
+else
+
+cat /etc/passwd | cut -f1 -d : | grep -v halt | grep -v operator |
+	grep -v root | grep -v shutdown | grep -v sync | grep -v bin |
+	grep -v ftp | grep -v daemon | grep -v adm | grep -v lp |
+	grep -v mail | grep -v postmaster | grep -v news  | grep -v uucp |
+	grep -v man | grep -v games | grep -v guest | grep -v nobody > user.list
+fi
+
+for USER in `cat user.list`; do
+ if cat /home/$USER/.bash_history | grep passwd >> /dev/null; then
+    echo
+    echo "user $USER have tried to access the passwd file"
+    echo "do you want to remove $USER from your system [y/n] "
+read YN
+ if [ "$YN" = "y" ]; then
+    echo "user $USER is being deleted"
+    echo "home dir of user $USER is however intact"
+    echo
+    remuser $USER
+ else
+    echo "user $USER is not deleted"
+    echo
+ fi
+else
+    echo "$USER haven't tried to access the passwd file"
+ fi
+done
+
+ rm user.list
+    echo
+    echo "Script finished"
+    echo
+exit 0
+
+-------------------------------------------------------------------------------
+
+I will just translate this script into real/clear English:
+
+if (check own user-name) is anything else but root >> send output to a black hole
+say, "you have to be root to use this"
+terminate program.
+in other cases (in this case that can only be if the user is root)
+
+list the contents of the file "/etc/passwd" combined with - cut out the
+user names (field 1 separated by ":") grep everything except lines containing the
+following words/names: halt operator root shutdown sync bin ftp daemon
+adm lp mail postmaster news uucp man games guest nobody and send it
+to the file "user.list"
+end "if" statement
+
+for each user in the "user.list" file do the following
+if the word "passwd" is present in "/home/$USER/.bash_history" >> output to
+the systems black hole
+say nothing
+say "user $USER haver tried to access the passwd file"
+say "do you want to remove $USER from your system [y/n]"
+read if the input from the keyboard is a "y" or "n"
+
+if the variable for the answer of the input is "y" then
+say "user $USER is being deleted"
+say "home dir of user $USER is however intact"
+say nothing
+removing the user from the system that tried to access the passwd file
+in other cases
+say "user $USER is not deleted"
+say nothing
+end "if" statement
+in other cases
+say $USER haven't tried to access the passwd file
+end "if" statement
+exit the for-loop
+
+remove the "user.list" file
+say nothing
+say "Script finished"
+say nothing
+
+exit and return to the shell command line.
+
+-------------------------------------------------------------------------------
+
+Note: grep -v == show everything *except* what comes after the -v
+
+-------------------------------------------------------------------------------
+
+Here is another way of doing the exact same script, just to illustrate that
+the same thing can be done in several different ways:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+
+if [ "$UID" != "0" ]; then
+    echo "you have to be root to use this"
+    exit -1
+fi
+
+for uids in `cat /etc/passwd`; do
+    useruid=`echo "$uids" | awk -F':' '{print $(3)}'`
+    test "$useruid" -ge "500" 2>/dev/null &&
+    echo "$uids" | awk -F':' '{print $(1)}' > user.list
+done
+
+for USER in `cat user.list`; do
+    if (grep passwd /home/$USER/.bash_history >/dev/null); then
+       echo
+       echo "user $USER have tried to access the passwd file"
+       echo "do you want to remove $USER from your system [y/n] "
+       read YN
+
+       case $YN in
+            y* | Y*)
+	       echo "user $USER is being deleted"
+    	       echo "home dir of user $USER is however intact"
+    	       remuser $USER
+	       echo
+	       ;;
+            n* | N*)
+	       echo "user $USER is not deleted"
+	       echo
+	       ;;
+       esac
+    else
+       echo "$USER haven't tried to access the passwd file"
+       rm -f user.list
+       echo
+       echo "Script finished"
+       echo
+    fi
+done
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+Since this script does the exact same thing, but in another way, I'll leav you
+with the experiance of trying to figure out the differences and how it
+works with the help of this tutorial, you might not get this right until
+you've read this tutorial twice.
+
+A tip is: try to make a comment to each line with what it does and why.
+
+-------------------------------------------------------------------------------
+
+This below script is a "Wingate" scanner, to scan for wingates that can
+be used to bounce off and such things, don't know if that's really legal
+so take that on your own risk.
+
+Anyway here comes the script:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+echo > .log.tmp
+echo > .log2.tmp
+echo "sleep 7" > wg.config
+echo "killall -2 telnet" >> wg.config
+
+scan="$1"
+count="0"
+max="255"
+
+clear
+
+if whoami | grep root >> /dev/null ; then
+   echo "please use this as user and not root, since it would kill all users"
+   echo "telnet sessions"
+ else
+clear
+fi
+
+if [ "$1" = "" ]; then
+        echo " usage is: $0 <C host> "
+        echo "  examples:"
+        echo "  $0 127.0.0"
+        echo " That will scan from 127.0.0.0 to 127.0.0.255"
+        echo
+        echo "be aware though, while it scans it also kills any other telnet"
+        echo "sessions you might have ...."
+ exit 0
+fi
+
+while [ "$count" != "$max" ]; do count=`expr $count + 1`
+        echo "Attempting connection to $1.$count "
+        echo > .log2.tmp
+        ./wg.config &
+        telnet $scan.$count >> .log.tmp
+        cat .log.tmp | grep -v refused | grep -v closed | grep -v Connected | grep -v Escape | grep -v login >> .log2.tmp
+        echo >> .log.tmp
+    done
+  echo "Script Finished, results stored in .log.tmp and .log2.tmp"
+exit 0
+
+-------------------------------------------------------------------------------
+
+This time I will not translate the script into clear English and I will
+not show how it looks executed, I leave that for you to do =)
+
+------------------------------------------------------------------------------
+
+Now a final practical example of a script, this is a small graphical front end
+to the console mp3 player `mpg123` so you got to have that to work
+and you need to execute this script in a directly where you have mp3's ....
+Also if you want the X-windows part of it to work you need to get and
+install Xdialog, you can get that from www.freshmeat.net ...
+However if you have Linux Mandrake you should be good anyway, Xdialog
+comes as default in Mandrake.
+This script should be named `xmpg123`.
+So here we go:
+
+-------------------------------------------------------------------------------
+
+#!/bin/bash
+dialog --backtitle "xmpg123"
+       --title "Main menu"
+       --menu "Make your choice" 13 60 6
+        1 "X-windows"
+        2 "Ncurses"
+        3 "Exit" 2> .tempfile
+        output=`cat .tempfile`
+        echo $output
+        rm -f .tempfile
+
+if [ "$output" = "1" ]; then
+for songs in `ls -1 *.mp3`; do
+echo "$songs mp3-file" >> .tempfile
+done
+output=`cat .tempfile`
+Xdialog --menu 2 2 2 1 $output
+        2> .tempfile
+        output=`cat .tempfile`
+        mpg123 $output
+        rm -f .tempfile
+fi
+
+if [ "$output" = "2" ]; then
+for songs in `ls -1 *.mp3`; do
+echo "$songs mp3-file" >> .tempfile
+done
+menu=`cat .tempfile`
+dialog --menu "Make your choice" 13 70 6 $menu 2> .tempfile
+       output=`cat .tempfile`
+       mpg123 $output
+       rm -f .tempfile
+fi
+
+exit 0
+
+-------------------------------------------------------------------------------
+
+A note being that dialog and Xdialog seems to be in early stages, so this
+may look sort of buggy if you don't have the great dialog god at your side...
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+And don't forget to "chmod u+x <script name> or chmod a+x <script name>
+
+to make your scripts executable.

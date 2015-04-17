@@ -1,0 +1,325 @@
+1 - What you already know. (should know)
+
+=========================== Aliens Bash Tutorial ==============================
+--------------- Written by Billy Wideling <-> alien@koping.net ----------------
+===============================================================================
+
+First you probably need to read a UNIX command bible to really understand this
+tutorial, but I will try to make it as clear as possible, there is about
+100-150 UNIX commands explained later in this tutorial.
+You are to have some UNIX experience before starting on this tutorial, so
+if you feel that you have UNIX/Linux experience feel free to start to learn
+here.
+What I included here is general shell scripting, most common other things
+and some UNIX commands.
+Here's the most common shell types:
+
+bash  = Bourne again shell
+sh    = shell
+csh   = C shell
+tcsh  = Tenex C shell (not tab-completion-extended C shell)
+tclsh = Tcl shell
+ksh   = korn shell
+ash   = a shell
+bsh   = bourne shell ? (in most Linux distributions it's a link to /bin/ash)
+zsh   = the Z shell (it's what it's manual page tells about it .. :/ )
+
+===============================================================================
+
+
+1 - What you already know. (should know)
+
+===============================================================================
+
+Here we go, bash scripting is nothing more then combining lots of UNIX commands
+to do things for you, you can even make simple games in bash
+(just UNIX commands) or as in normal cases, batch files to control things
+in your computer.
+
+
+
+There is a variety of easier and harder examples in the beginning of this
+tutorial, I've done it this way to make it easier for people to get the
+general picture, so they will get more of the "aha!" experiences in the later
+chapters of this tutorial. What bash or any scripting language does is to call
+for pre-made programs that lives in your computer.
+So when you write a command in a script you are calling a command that is
+a part of the system.
+That is why this tutorial will be just as much a Linux and UNIX tutorial
+as a shell scripting tutorial.
+
+I will however not take up much about The X Windows System in this
+tutorial, for the simple reason that a Window Manager does nothing else
+then display programs.
+
+This means that a Window Manager is like a graphical shell for the system.
+You can do all in this tutorial from any terminal emulator in a Linux
+Graphical Environment (The X Windows System).
+A terminal emulator would be such as: Eterm, xterm, axvt, rxvt, kterm etc.
+A terminal emulator let's you get up a terminal with a command prompt
+in a graphical window.
+
+-------------------------------------------------------------------------------
+
+Shell command separator/control characters:
+
+|  = pipe will take the first commands stdout as the second commands stdin.
+|| = OR if first command is false, it will take the second.
+|= = OR IS (mostly used in if statements)
+&& = AND if first command is true, it will execute the second one.
+!  = NOT (mostly used in if and test statements), but as a shell-command
+     it opens a shell to run the command (ex. `! echo foo`)
+!= = NOT IS (mostly used in if statements)
+!$ = last commands last argument
+!! = repeat last command
+=  = IS (mostly used in if statements)
+;  = will separate 2 commands as if they were written on separate command lines
+;; = end of a case function in a case statement. (see `case` further down)
+$  = prefix to a variable like "$myvar"
+$! = PID of the last child process.
+$$ = PID of current process (PID == Process ID)
+$0 = Shows program that owns the current process.
+$1 = First argument supplied after the program/function on execution.
+$2 = Second argument supplied after the program/function on execution. ($3 etc.)
+$# = Shows the number of arguments.
+$? = Any argument (good to use in `if` statements)
+$- = current option flags (I never ever had to use this one)
+$_ = Last argument/Command
+$* = All arguments
+$@ = All arguments
+#  = commented line, anything on a line after "#" will be overlooked by the script
+{  = start braces (starts a function)
+}  = end braces   (ends a function)
+[  = start bracket (multiple-argument specifiers)
+]  = end bracket (multiple-argument specifiers)
+@  = $@ is equivalent to "$1" "$2" etc. (all arguments)
+*  = wild card (* can substitute any number of characters)
+?  = wild card (? can substitute any single character)
+"  = quote
+'  = precise quote. (Will even include "'s in the quote)
+`  = command quote. (variable=`ls -la` doing $variable will show the dir list)
+.  = dot will read and execute commands from a file, ( . .bashrc )
+&  = and. as suffix to executed file makes it go to the background(./program &)
+0> = stdin stream director (I never seen this used in any script)
+1> = stdout stream director (standard output)
+2> = stderr stream director (standard error output)
+%  = job character, %1 = fg job 1, %2 = fg job 2, etc.
+>> = stream director append to a file
+<< = stdin stream director. (cat > file << EOF ; anything ; EOF)
+>  = stream director that will start at the top of the file
+    (in if statements < and > may be used as greater-then
+    and lesser-then, as: if [ "$1" >= "2" ])
+  = back-slash, takes away any special meaning with a character,
+     $var will not be treated as a variable.
+     (and a new line will not be treated as a new line)
+     Also a  before a command, removes any alias on the command as: rm
+>& = stream director to stream director, ie. echo "a" 1>/dev/null 2>&1
+     this directs 2> to the same place as 1>
+
+-------------------------------------------------------------------------------
+
+Here is the basic UNIX or rather Linux directory structur:
+
+/ (system root)
+ _______________________________|____________________________________
+ |    |	    |	 |     |    |	    |	      |	   |	  |    |    |
+bin/ boot/ dev/ etc/ home/ lib/ lost+found/ proc/ root/ sbin/ usr/ var/
+ |    |     |    |     |    |       |         |    |      |    |    |
+ |    |     |    |     |    |       |         |    |      |    |    |-> various
+ |    |     |    |     |    |       |         |    |      |    |
+ |    |     |    |     |    |       |         |    |      |    |-> Read later..
+ |    |     |    |     |    |       |         |    |      |
+ |    |     |    |     |    |       |         |    |      |-> Superuser Binaries
+ |    |     |    |     |    |       |         |    |
+ |    |     |    |     |    |       |         |    |-> User roots home dir
+ |    |     |    |     |    |       |         |
+ |    |     |    |     |    |       |         |-> system info etc.
+ |    |     |    |     |    |       |
+ |    |     |    |     |    |       |-> Orphan files (look here after crashes)
+ |    |     |    |     |    |
+ |    |     |    |     |    |-> System / programming libraries
+ |    |     |    |     |
+ |    |     |    |     |-> Contains the user accounts home directories
+ |    |     |    |
+ |    |     |    |-> System configuration files.
+ |    |     |
+ |    |     |-> Devices
+ |    |
+ |    |-> The kernel and kernel maps.
+ |
+ |-> Executeble files. (binaries)
+
+The /usr directory contains a whole lot of things, mainly user accessible
+things, like binaries in /usr/local/bin/ and /usr/bin/ also libraries
+in /usr/lib/ and /usr/local/lib/.
+The kernel source should also be under /usr, in /usr/src/linux/
+But more about that later.
+
+-------------------------------------------------------------------------------
+
+Here's an example of the following files locations:
+/dev/null
+/dev/fd0
+/etc/passwd
+/home/alien/.profile
+/usr/local/bin/BitchX
+/
+ _______________________________|____________________________________
+ |    |     |    |     |    |       |         |    |      |    |    |
+bin/ boot/ dev/ etc/ home/ lib/ lost+found/ proc/ root/ sbin/ usr/ var/
+            |    |     |                                       |
+            |    |   alien/                                  local/
+            |    |     |                                       |
+            |    |     |-> .profile                            |
+            |    |-> passwd                                   bin/
+            |                                                  |
+            |-> null                                           |-> BitchX
+            |-> fd0
+
+-------------------------------------------------------------------------------
+
+And a final example that's a bit more stripped, just in case you are really
+new to computers.
+Here following files locations:
+
+/dev/null
+/dev/audio
+/dev/hda1
+/etc/passwd
+/etc/shadow
+/home/alien/.profile
+/home/alien/tmp/somefile
+/home/user/.bash_profile
+/usr/local/bin/BitchX
+/sbin/shutdown
+/
+  _____________________________|_____________________________
+  |              |             |            |              |
+ dev/           etc/         home/-----    usr/          sbin/
+  |              |             |      |     |              |
+  |-> null       |             |      |   local/           |-> shutdown
+  |-> audio      |             |      |     |
+  |-> hda1       |             |      |    bin/
+                 |-> passwd  alien/   |     |
+                 |-> shadow    |     user/  |-> BitchX
+                               |      |
+                               |      |-> .bash_profile
+                               |
+                               |-> .profile
+                               |
+                              tmp/
+                               |
+                               |-> somefile
+
+-------------------------------------------------------------------------------
+
+This is the same structure as on any Operating System that uses directories,
+Though some Operating Systems may call the / directory C: and some other
+may call it HD etc.
+And of course some of the directory names in Linux/UNIX are UNIX specific.
+
+No further explanation should be necessary.
+
+After reading this tutorial, brows around the system and try to learn
+what all the files does, just don't remove any files you didn't put there
+until your ABSOLUTLEY sure of what you are doing.
+
+-------------------------------------------------------------------------------
+
+Here's a few UNIX commands just for illustration:
+
+echo
+======
+	echo will *echo* anything you add to it like this:
+
+	alien:~$ echo "blah"
+	blah
+	alien:~$
+
+	To get it to echo without a new line add the suffix -n
+	like this:
+
+	alien:~$ echo -n "blah "
+	blah alien:~$
+
+	I'll get back to why you want to do "-n" sometimes in a while.
+
+read
+======
+	read will read from the keyboard (stdin) and save it as a variable
+	the variable name goes after the read command, like this:
+
+	alien:~$ read myvar
+	<here I type say "blah">
+
+	alien:~$ echo $myvar
+	blah
+	alien:~$
+
+	To combine these two commands (echo and read) in a small script
+	line, it can look like this:
+
+	alien:~$ echo -n "password: " ; read pass ; echo "Your pass is $pass"
+	password: <here I type "mypass">
+	Your pass is mypass
+	alien:~$
+
+	Get the basic idea ?
+
+-------------------------------------------------------------------------------
+
+Anyway, here are some commands that you should know before moving on with this
+tutorial -
+
+[*] after == important to know.
+[X] after == very basics will do.
+ls	[*]     Ex: ls -la		Long directory listing.
+echo	[*]	Ex: echo "foo"		Does what it says.
+cat	[*]	Ex: cat /etc/passwd	Dump out the content of a file.
+less	[X]	Ex: less /etc/passwd	Scroll up and down in a file (q = exit)
+head	[X]	Ex: head -5 /etc/passwd	Get the 5 (-5) first lines of a file.
+tail	[X]	Ex: tail -7 /etc/passwd	Get the 7 (-7) last lines of a file.
+grep	[*]	Ex: grep x /etc/issue   Dump lines containing x from /etc/issue
+chmod	[*]	Ex: chmod a+x file	Give everyone executable rights to file
+chown	[X]	Ex: chown root file	Change owner of file to root.
+(cd     [-]     Ex: cd /etc             Change Directory to /etc)
+Some applications you need to know how to operate (basics will do) :
+any text editor (preferably emacs or vi - they are explaind last in this file)
+telnet		Ex: telnet 127.0.0.1	Opens a connection to IP 127.0.0.1
+lynx		Ex: lynx http://foo.bar A command line based web browser.
+ftp (ncftp)	Ex: ncftp ftp://foo.bar A command line based ftp client.
+ssh             Ex: ssh 127.0.0.1	Opens a secure connection to 127.0.0.1
+
+These are all explained fully later in this tutorial.
+
+-------------------------------------------------------------------------------
+
+Now don't sit there and ask yourself how's going to teach you the commands
+or applications I just listed here above. use the manual pages.
+like this:
+
+man echo
+
+that will get you the full manual on the command echo :)
+man works the same way with applications that you have the manual pages for.
+To get out of the manual page just press the letter "q".
+"q" quits it and bet's you back to the command line prompt.
+man uses all the normal "less" commands.
+Or read further down in this tutorial in the basic Linux/UNIX commands and
+operations section (8).
+
+-------------------------------------------------------------------------------
+
+The key to shell scripting just as with any programming language/Operating
+System is to REALLY understand what you are doing, so do read this file
+more then once, and don't read it to fast.
+
+Take your time and let it sink in, so you know what it's all about,
+and do take time to read manual pages and do some playing with the commands
+so you learn them.
+
+Now that should be enough of what you *should* know before starting to learn
+
+UNIX shell scripting.
+
+So here we go.......

@@ -1,0 +1,739 @@
+===============================================================================
+6 - Customize your system and shell.
+===============================================================================
+
+This section is dedicated to how you can customize your system in various
+ways, this section was never planned to be in this tutorial, but since
+I have received so many questions on how to do all this, I might as well
+include it in the tutorial. 
+
+-------------------------------------------------------------------------------
+
+First of I'm going to explain the local settings, this means the settings
+that will only affect a single user and not the whole 'global' system.
+And the most logical way to start this is (I think) to talk about the shell.
+
+-------------------------------------------------------------------------------
+
+At the very top of this tutorial you will find the various types of shells,
+default for most systems is /bin/bash, this is set in the /etc/passwd file
+so a normal user can not change that.
+
+What a normal user can do if he wants to use another shell is to start it from
+his ~/.bashrc file.
+So say now that you feel the urge to run tcsh, then just add the
+line /bin/tcsh in your ~/.bashrc, this may be done by doing:
+echo "/bin/tcsh" >> ~/.bashrc
+personally I prefer the standard bash.
+
+But if you do have root (super user) access to the system, you can change
+the shell type correctly in the /etc/passwd file.
+
+here's a user account with /bin/bash from /etc/passwd
+
+User:x:500:500:my real name:/home/user:/bin/bash
+
+And here the same line changed to /bin/tcsh (tenex C shell)
+
+User:x:500:500:my real name:/home/user:/bin/tcsh 
+
+
+-------------------------------------------------------------------------------
+
+Here are the system variables you can use to change your enviorment,
+these can be set and exported from your ~/.bash_profile or /etc/profile
+It's not all of the  variables but all the really interesting ones,
+so here we go:
+
+BASH=	this can also set your shell type, it's most commonly defaulted
+	to BASH=/bin/bash
+
+BASH_VERSION=	this can change the version reply of bash, on my system
+		this is defaulted to BASH_VERSION='2.03.19(1)-release'
+
+ENV=		this should point to a file containing your enviorment,
+		this is by default: ENV=~/.bashrc
+
+HISTFILE=	this should point to a file that will contain your shell
+		'history', as in your previously used commands.
+		this is by default set to: HISTFILE=~/.bash_history
+
+HISTFILESIZE=	the max aloowed size of the history file, usually around 1000 
+
+HISTSIZE=	about the same as HISTFILESIZE
+
+HOME=		this should point to your home dir
+
+HOSTNAME=	this is your hostname
+
+HOSTTYPE=	this should return the same as the `arch` command.
+
+IFS=		Internal Feild Separator .... this is a delimeter,
+		often defaulted to a new line as this:
+......
+IFS='
+'
+......
+
+INPUTRC=	defaulted to INPUTRC=/etc/inputrc
+
+LANG=		language variable, default is en for english
+
+LANGUAGE= 	about the same as LANG, also defaulted to en for english
+
+LINGUAS=	defaulted to  en_US:en  also a language variable.
+
+LS_COLORS=	sets colors to the `ls` command. this on my system
+		is defaulted to this:
+
+......
+LS_COLORS='no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:bd=40;33;01:
+cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=01;32:*.cmd=01;32:*.exe=01;32:
+*.com=01;32:*.btm=01;32:*.bat=01;32:*.tar=01;31:*.tgz=01;31:*.tbz2=01;31:
+*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.lha=01;31:*.zip=01;31:
+*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tz=01;31:*.rpm=01;31:
+*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.xbm=01;35:*.xpm=01;35:
+*.png=01;35:*.tif=01;35:*.tiff=01;35:'
+......
+		So just add what you want here, and colors are the same
+		as explained about how to set the prompt later down, but
+		without the [ infront and m on the end.
+
+MAIL=		mail file, usually MAIL=/var/spool/mail/<username>
+
+OSTYPE=		This can change your OS reply, it's on a linux defaulted
+		to: OSTYPE=linux-gnu
+
+PATH=		changes your path, this variable is explained in
+		the explanation of the /etc/profile file
+
+PPID=		parent pid .... this is a read-only variable ...
+		so you cant change it. 
+
+PS1=		the prompt variable, explained later down.
+
+PS2=		the *more to come* variable, as if you type an unfinished
+		command string, it will bring you a new prompt where
+		you can finish it, this is usually defaulted to: PS2='> '
+
+SHELL=		another way to change your shell type ...
+
+TERM=		terminal type, usually defaulted to: TERM=linux
+		but can also be like: TERM=vt100
+		there are more video terminals then 100 though.
+
+UID=		your user ID, if your root this will be 0,
+		this is a readonly variable.
+
+USER=		your user name ....
+
+USERNAME=	same as $USER
+
+Say that you want to change your shell to /bin/csh and your path to just /bin
+(you dont), but just if you would in your: .bash_profile add:
+
+-------------------------------------------------------------------------------
+
+SHELL=/bin/csh
+PATH=/bin
+
+export PATH SHELL
+
+-------------------------------------------------------------------------------
+
+Not so hard huh ?
+
+-------------------------------------------------------------------------------
+
+The next thing here is a question that I've heard alot, and that is "how do I
+change my command prompt ?".
+
+The command Prompts variable is named PS1 ($PS1)
+
+for a prompt that looks like this:
+[alien@localhost alien]$
+the contents of the PS1 variable would be this:
+[u@h W]$
+
+All the prompts internal variables starts with a  (backslash)
+
+useful:
+
+$ = the prompt ($ for user and # for root)
+d = date
+h = abbreviated hostname (root.host.com would become root)
+H = full hostname
+s = shell type
+t = time
+T = time with seconds
+u = username
+v = shell version (short)
+V = shell version (long)
+w = full path
+W = current directory name
+
+less useful:
+e = erase rest of line .... not very useful
+n = new line ... not very useful
+r = whatever comes after r is displayed before the first character.
+
+A couple of examples would be:
+
+*BSD like.
+PS1="u: w> "
+
+DOS like.
+PS1="C:w > "
+
+RedHat like.
+PS1="[u@h W]$ "
+
+Init 1 like.
+PS1="s-v $ "
+
+How do I use colors in the prompt ?
+
+To use colors in the prompt you need to be familiar with the escape sequence
+color codings, those are as follows:
+
+reset         = ^[[0m
+flashing      = ^[[5m
+black         = ^[[0;30m
+red           = ^[[0;31m
+green         = ^[[0;32m
+yellow        = ^[[0;33m
+blue          = ^[[0;34m
+magenta       = ^[[0;35m
+cyan          = ^[[0;36m
+white         = ^[[0;37m
+highblack     = ^[[1;30m
+highred       = ^[[1;31m
+highgreen     = ^[[1;32m
+highyellow    = ^[[1;33m
+highblue      = ^[[1;34m
+highmagenta   = ^[[1;35m
+highcyan      = ^[[1;36m
+highwhite     = ^[[1;37m
+bg-white      = ^[[47m
+bg-magenta    = ^[[45m
+bg-blue       = ^[[44m
+bg-red        = ^[[41m
+bg-black      = ^[[40m
+bg-green      = ^[[42m
+bg-yellow     = ^[[43m
+bg-cyan       = ^[[46m
+
+Important to know is that the leading `^[` is NOT 2 characters, it's ONE
+control character that that takes up the space of 2 characters, or is
+described by 2 characters, if you have a real ^[ and you try to delete the
+[ do it it will delete both the [ and the ^ at the same time.
+
+------------------------------------------------
+Not really sure where to put this note but here,
+^[[<number>G
+Puts the cursor at column <number>, as this:
+
+echo -n "Starting myprog:" && echo -e "^[[50G OK" || echo -e "^[[50G FAILD"
+------------------------------------------------
+
+So how do you get a real control character ?
+
+Either you use the very old line editor 'ed' and press Ctrl+[ to get the
+control character (ed commands are described at the end of this tutorial),
+or you can use 'emacs' or the text editor 'joe'.
+
+To get control characters in emacs you press ^Q and ^<what you want>,
+as if you want a ^[ you press ^Q^3, and then ^X^S^X^C to save and quit.
+
+To get control characters in joe you press ` and then the character to make
+a control character, in this case [, when you do this in joe the ^[
+should look like a bold [.
+To save and quit in joe you press: Ctrl+K followed by Ctrl+X
+
+It's only the ^[ that is a control character the rest is normal ['s and
+numbers and so on. 
+
+Don't forget to enclose all your colors codes in [ ], this means that
+^[[0;31m (red) would be written as [^[[0;31m].
+
+Where do I write this and how does an example look ?
+
+You add this in your ~/.bash_profile, you can put it at the end of the file.
+
+Some examples are:
+
+[ highblue-user red-@ highblue-host green-dir ] highblue-$
+PS1="[^[[1;34mu^[[0;31m@^[[1;34mh ^[[0;32mW^[[0m]^[[1;34m$ [^[[0m] "
+
+highblue-user highwhite-: highblue-path >
+
+PS1="[^[[1;34m]u[^[[1;37m]: [^[[0;31m]w [^[[0m]> "
+
+(you can not cut and paste these examples without editing the ^['s to real
+control characters, and know that a color prompt is almost always buggy)
+
+-------------------------------------------------------------------------------
+
+The next thing to take up is how to set aliases and to change system variables.
+
+An alias is set in the ~/.bashrc file, if you use /bin/bash else, it's most
+likely in your .`shell type`rc as .zshrc .csh .tcsh etc.
+
+An alias means that you can make a short command for a longer command,
+as the alias `l` can mean `ls` and the alias `la` can mean `ls -la`, and
+so on, an alias is written like this (also a list of useful aliases):
+
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+alias s='cd ..'
+alias d='ls'
+alias p='cd -'
+alias ll='ls -laF --color'
+alias lsrpm='rpm -qlp'
+alias lstgz='tar -tzf'
+alias lstar='tar -tf'
+alias mktgz='tar -cfz'
+alias untar='tar -vxf'
+alias untgz='tar -vzxf'
+
+rm will now ask before removing anything.
+
+mv will now ask before overwriting anything.
+
+cp will now ask before overwriting anything.
+
+s will now work as cd ..
+
+d will now work as ls.
+
+p will now work as cd - (cd - == takes you to your last dir ie.
+you are in /usr/local/bin/ and does a cd /, if you from here wanna go back
+to /usr/local/bin/ you simply type `cd -`, or now just `p`.)
+
+ll will do a ls -la with colors and ending * after executable files and ending
+an ending / after dirs. 
+
+lsrpm will list the contents (where the files will end up if you install it) of
+any rpm file.
+
+lstgz will list the contents of a .tar.gz or .tgz file.
+
+lstar will list the contents of a plain .tar file.
+
+mkgz will make a tgz archive (mktar archive.tgz directory).
+
+untar will untar a .tar file.
+
+untgz will unzip and untar a  .tar.gz or a .tgz file.
+
+There is more alias like things you can set in the ~/.bashrc file, like
+smaller functions that works as aliases, like this:
+
+function whichrpm { rpm -qf `'which' $1`; }
+
+typing "whichrpm <command>" at a prompt will name the rpm file it came with.
+
+the rpm -qf command works like this:
+
+alien:~$ rpm -qf /usr/bin/dir
+fileutils-4.0i-1mdk
+alien:~$
+
+And the function works like this:
+
+alien:~$ whichrpm dir
+fileutils-4.0i-1mdk
+alien:~$
+
+function - tells bash that it's function.
+whichrpm - user defined name of the function.
+{ / } - starts/ends the function
+rpm -qf - command
+` command quote
+' precise quote
+which - command to locate a file in your path
+$1 - first argument after the function (the command after the function name
+when you execute it).
+; - end line
+function whichrpm { rpm -qf `'which' $1`; }
+
+So when you execute this, the system will think.
+aaah, a function within those {}'s, which I should call for when I hear
+the word "whichrpm", and what's after that word ($1) will be used as
+argument to "which", and what that returns will be used after "rpm -qf".
+
+which works like this:
+
+alien:~$ which dir
+/usr/bin/dir
+alien:~$
+
+So "`'which' $1`" (when executed with the word 'dir') returns "/usr/bin/dir",
+and so the whole function will finally execute: rpm -qf /usr/bin/dir
+
+-------------------------------------------------------------------------------
+
+Now more about the files in /etc, here you cant be user anymore,
+to edit the files in /etc requires you to be root.
+
+Fist here I'm going to talk about the /etc/crontab configuration file.
+
+-------------------------------------------------------------------------------
+
+The /etc/crontab is the global system file for cron jobs.
+cron is short for chronological, and as the name tells it's doing things
+in a chronological order, as you can tell it to run a script or a program
+once every 1 minutes, or you can tell it to run something annually, and
+anything in between.
+
+On RedHat like systems you have the dirs:
+
+/etc/cron.daily/
+/etc/cron.hourly/
+/etc/cron.monthly/
+/etc/cron.weekly/
+
+Any script or program that lives in those files will execute by the last
+name of the file, as if you put a script in /etc/cron.weekly/, the script
+will execute weekly.
+
+The /etc/crontab looks like this:
+
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+HOME=/
+
+# run-parts
+01 * * * * root run-parts /etc/cron.hourly
+02 4 * * * root run-parts /etc/cron.daily
+22 4 * * 0 root run-parts /etc/cron.weekly
+42 4 1 * * root run-parts /etc/cron.monthly
+
+The SHELL determens what shell that should be used to execute the things
+in the crontab.
+
+The PATH determens what directory's it should look in for commands/programs
+if no other specific path is given to a program, command or script.
+
+The MAILTO variable determens to what user cron should send mails to on errors.
+
+And the HOME variable determens crons root/home/base directory.
+
+The first 5 fields determens when to run a job, here's what they mean: 
+
+Field 1: minutes (0-59)
+Field 2: hours (0-23)
+Field 3: day of month (1-31)
+Field 4: month (1-12 - or names)
+Field 5: weekday (0-7 - 0 or 7 is Sun, or use names)
+
+The next field is the user that owns the execution process.
+
+Then we have run-parts, and after that the file to execute.
+(if the file to execute is a dir, it will execute everything in it)
+
+To use the crontab as a user (root included) simply type: crontab -e
+This brings you to a VI like editor (see VI commands later in this tutorial).
+Say now that you have a script /home/user/check.sh that you wanna run
+every 5'th minute. then you type "crontab -e"
+Press 'Esc' followed by 'o' to get to "insert" or "edit" mode.
+In there make the following line:
+
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * 	/home/user/check.sh --flag
+
+Then press 'Esc' followed by ':' and then type 'wq' followed by enter to
+write/save and, quit the file, and that's it.
+
+When you run crontab as user you don't have to specify what user that should
+own the process, "* * * * * file" should be enough.
+
+Another way of writing:
+0,5,10,15,20,25,30,35,40,45,50,55 * * * *       /home/user/check.sh --flag
+Is this:
+0-59/5 * * * *       /home/user/check.sh --flag
+That means do this (/home/user/check.sh --flag) from 0-59 with 5 as an
+intervall.
+This means that:
+* 0-23/2 * * *       /home/user/check.sh --flag
+Would run the same script every other hour. 
+
+Not very hard is it ?
+
+-------------------------------------------------------------------------------
+
+Then we have the  /etc/fstab is a list of the HD partitions the system
+should mount as what when the system boots.
+This may look like this:
+
+/dev/hda1               /                       ext2    defaults        1 1
+/dev/hda3               none                    swap    sw              0 0
+/dev/hda4               /home                   ext2    defaults        1 2
+/dev/hda6               /tmp                    ext2    defaults        1 2
+/dev/hdc1               /windows                vfat    defaults        0 0
+/dev/fd0                /mnt/floppy             auto    noauto,nosuid   0 0
+/dev/hdb                /mnt/cdrom              auto    noauto,ro       0 0
+
+Fist it's the HD partition, then (a few tabs in) the mount point (where the
+eventual contents of the HD partition should end up), then what file system
+the partition has, further is if it should be mounted by default etc.
+and the last 2 numbers is fs_freq and fs_passno (see the man page for fstab).
+
+The possible HD partitions you have to find for your self or know...
+a tip is to go over the HD's with fdisk, and check for free space.
+
+The possible mount points is only limited by your imagination, though
+there must always be a /
+A good disk usage should have these partitions:
+/	5%
+/usr	30%
+/home	30%
+/tmp	10%
+And 25% over for other partitions, like /sources, or whatever.
+
+The possible and supported file systems are currenty:
+minix,ext,ext2,xiafs,msdos,hpfs,iso9660,nfs,swap,vfat, and perhaps ntfs
+
+The possible mount options are:
+sync,user,noauto,nosuid,nodev,unhide,user,noauto,nosuid,exec,nodev,ro etc.
+see the man mount page.
+
+So say that you are going to add another cdrom that you want user to be able
+to mount, and the cdrom is on /dev/hdd, then the line to add would look like
+this (make sure you have the mount point dir, like here you have to
+mkdir /cdrom):
+
+/dev/hdd		/cdrom			auto	noauto,user,ro	0 0
+
+And that's about it for the /etc/fstab
+
+-------------------------------------------------------------------------------
+
+Now I'd like to explain one of the very important files, the /etc/profile file.
+In this file is the Global profile settings, that will apply for all users.
+
+Fist in this file we should have the PATH variable.
+The directory's in the PATH is the directory's the system will look in if you
+type a command, for that command to execute it.
+
+Say now that your path looks like this:
+PATH="$PATH:/usr/X11R6/bin:/bin"
+
+And you type "ls", then the system will first look in /usr/X11R6/bin if it can
+find any file named "ls", and if it doesn't find it there, it will look in /bin,
+and if it finds it there it will execute it.
+
+The most common places on a system to store commands and programs is in these
+directory's:
+/usr/X11R6/bin
+/bin
+/sbin
+/usr/bin
+/usr/sbin
+/usr/local/bin
+/usr/local/sbin
+
+A path with all those directory's in it would look like this:
+PATH="$PATH:/usr/X11R6/bin:/bin:/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin"
+
+The next thing in there can/should be the PS1 (the prompt), I've already
+taken up how to customize the prompt, so no need to do that again.
+
+Then (at least in RedHat like systems) we have this:
+
+[ "$UID" = "0" ] && {
+ulimit -c 1000000
+                } || {
+ulimit -c 0
+}
+
+This says: if the UID of the user is 0 (root) then do: ulimit -c 1000000
+or if that doesn't work, do: ulimit -c 0.
+
+Then we have an if statement about umask on the user...
+
+After that we define some system variables, where after we export them.
+
+Then we load all the .sh scripts in /etc/profile.d/
+
+And that's it, in that file.
+
+This is an important file if you wanna add any system variables, or if you
+want to change anything globally for the whole system.
+
+-------------------------------------------------------------------------------
+
+Now on to the /etc/hosts.allow and /etc/hosts.deny files.
+
+Those hosts who are in hosts.allow are always allowed to connect to the system
+under the condition that they have valid login and password ofcorse.
+
+Those hosts who are in hosts.deny can never establish a lasting connection
+to your system, even if they have a valid login and password.
+
+If you don't want anyone to connect to your computer at all, you simply add
+the following to /etc/hosts.deny:
+
+ALL: ALL
+
+And this to /etc/hosts.allow:
+
+ALL: LOCAL
+
+Or if you have a network, you may wanna add this in /etc/hosts.allow:
+
+ALL: LOCAL, 192.168.1.
+
+Where 192.168.1. is your network call C network.
+
+/etc/hosts.allow and /etc/hosts.deny understands the following wildcards:
+
+ALL      The universal wildcard, always matches.
+LOCAL    Matches  any host whose name does not contain a dot character.
+UNKNOWN  Matches any user whose name is unknown.
+KNOWN    Matches any user whose name is known.
+PARANOID Matches any host whose  name  does  not  match  its address.
+
+Read man hosts.allow or man hosts.deny (should be the same man file), to find
+out more about this.
+
+-------------------------------------------------------------------------------
+
+Next up is the /etc/inputrc file, which contains breaf keyboad confirurations.
+If you want to something like Ctrl+W or something to a function of any kind
+here is the place to do that.
+The example from the file looks like this:
+
+# Just a little exemple, how do you can configure your keyboard
+# If you type Control-x s it's add a su -c " " around the command
+# See the info files (readline) for more details.
+#
+# "C-xs": "C-e\"C-asu -c \""
+
+This would mean that if you want to add say: Ctrl+W to add the command
+`time` before another command you would do:
+
+"C-w": "C-e C-atime 
+
+Another example would be, if you want to add: Ctrl+W Q to add: echo "<command>"
+around the <command> you would do:
+
+"C-wq": "C-e\"C-aecho \""
+
+This means that if you type 'word' and then press Ctrl+W followed by Q you
+will end up with: echo "word", pretty handy.
+
+You can also add a .inputrc in your home dir with the same functions,
+but only for that user.
+
+Just make sure you dont overwrite some other function, test the Ctrl+<key(s)>
+function that you wanna use so they dont already do something.
+
+If you want to bind keys to functions or characters, this is not the place
+to do that, then you need to find your keymap like this one:
+/usr/lib/kbd/keymaps/i386/qwerty/se-latin1.kmap.gz
+gunzip it, edit it and then zip it up again.
+
+I will not explain how to edit a keymap here, but it's not that hard,
+just read the contnts of the unziped keymap a few times and use the
+power of deduction.
+
+-------------------------------------------------------------------------------
+
+The /etc/passwd holds the login information which looks something like this:
+
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:
+daemon:x:2:2:daemon:/sbin:
+adm:x:3:4:adm:/var/adm:
+lp:x:4:7:lp:/var/spool/lpd:
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+alien:x:500:500:Me:/home/alien:/bin/bash
+user:x:501:501::/home/user:/bin/csh
+
+You are looking on 7 accounts, nameley: root, bin, daemon, adm, lp, shutdown,
+alien and user.
+
+each of the lines have 7 feilds separated by ':'.
+The fields from left to right are:
+
+1 login-name
+2 encrypted-password (this field contains only 'x' if there is an /etc/shadow)
+3 uid (user id)
+4 gid (group id)
+5 user-information
+6 home-directory
+7 shell-type
+
+If you make an account by hand in the /etc/passwd file, put a '*' in the
+encrypted-password field and use the `passwd` command to set the password.
+
+-------------------------------------------------------------------------------
+
+The /etc/shadow file, if this file exists, this is where the real
+encrypted passwords are located, this file can only be read by the super-user
+(root), and it looks like this:
+
+root:$1$UrbUdguK$yrO3U/dlwKC5K3y2ON/YM.:11056:0:21:7:::
+bin:*:11056:0:99999:7:::
+daemon:*:11056:0:99999:7:::
+adm:*:11056:0:99999:7:::
+lp:*:11056:0:99999:7:::
+shutdown:$1$hu86lnLIhnklY8ijnHui7.nn/jYg/mU:11056:1:365:14:::
+alien:$1$vf3tGCFF$YRoFUgFDR8CVK6hHOwU/p0:11056:0:50:14:31::
+user:$1$asd8kiLY76JNdskDkj97kMiyBujy/jD:11074:2:100:14:3::
+
+(I've changed the characters in the encrypted-password, so they are not valid) 
+
+The manual page (man 5 shadow) tells the following about the 9 fields:
+
+Login name
+Encrypted password
+Days since Jan 1, 1970 that password was last changed
+Days before password may be changed
+Days after which password must be changed
+Days before password is to expire that user is warned
+Days after password expires that account is disabled
+Days since Jan 1, 1970 that account is disabled
+A reserved field
+
+If anyone knows what the last field (after the final ':') is reserved for ...
+please drop me a mail.
+
+Read the lines from the files, and compare them with what the 9 fields
+mean, and see if you can make out how the accounts for each user is set up.
+
+-------------------------------------------------------------------------------
+
+Now the /etc/motd file.
+
+The /etc/motd contains whatever you want to display to the user
+that logs into the system, this can be a set of rules for your system,
+or some ascii graphics or whatever you want.
+
+-------------------------------------------------------------------------------
+
+And now the /etc/skel/ which is a dir and contains the basic files
+that will be given to any new user account.
+
+Say that you add a file called, /etc/skel/.ircrc then all new useraccounts
+that are added will have a ~/.ircrc file in there home directory.
+
+-------------------------------------------------------------------------------
+
+And last the /etc/issue and /etc/issue.net file.
+On most systems there is only an /etc/issue file that works as both
+/etc/issue and /etc/issue.net, the issue file holds the information
+or rather text that is displayed to the user just before the
+login prompt, usually it is the system specifications, like operating system
+version and things like that.
+
+The /etc/issue (if there is any /etc/issue.net) is the issue file for the
+local users, and the /etc/issue.net is for users that logs in
+from a remote host.
+
+-------------------------------------------------------------------------------
+
+There is alot more in the /etc directory, but what I've written this
+far is about what you need to customize your system to your needs.

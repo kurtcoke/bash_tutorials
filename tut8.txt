@@ -1,0 +1,433 @@
+8 - The Init and system scripts
+
+===============================================================================
+8 - The Init and system scripts.
+===============================================================================
+
+In this section I will cover the system V init, which is the most used
+init in Linux.
+Beside the Syst V inti, there are also the BSD init, which is used by
+Slackware and Debian and in some smaller distributions of Linux.
+The rest, as far as I know, uses the Syst V init.
+There are not so much difference of the two, I'll try to cover the
+differences later.
+The example and files here are taken from SysVinit-2.78-6 & initscripts-5.27-37
+which is compatible in some ways with the BSD init, I'll come back to that
+later.
+
+So here we go:
+
+-------------------------------------------------------------------------------
+
+The basic Syst V init comes with the following commands & devices: 
+
+/dev/initctl		This is the init controll device.
+/sbin/halt		This is to shut down the system.
+/sbin/init		This is to change the init runlevel.
+/sbin/killall5		This will kill everything but the script that runs it.
+/sbin/pidof		This will get the PID of a Process name.
+/sbin/poweroff		This will power down the system.
+/sbin/reboot		This will reboot the system.
+/sbin/runlevel		This will tell the init runlevel.
+/sbin/shutdown		This will shut down the system.
+/sbin/sulogin		This is the single user mode login.
+/sbin/telinit		This is the init process control initialization.
+/usr/bin/last		This shows who was in the system last.
+/usr/bin/lastb		This is about the same as last.
+/usr/bin/mesg		This is to toggle writeble mode on your tty.
+/usr/bin/utmpdump	This dumps a file for utmp (this lacks documentation)
+/usr/bin/wall		This sends a message to all ttys.
+
+And then the init needs the following extra files/dirs and commands from
+the initscripts package:
+
+/bin/doexec		This lets you run a program under another name.
+/bin/ipcalc		This lets you manipulate IP addresses.
+/bin/usleep		This sleeps for microseconds.
+/etc/X11/prefdm		This is the display manager preferrence file for X.
+/etc/adjtime		This is the Kernel Clock Config file.
+/etc/init.d		BSD init compatibilety directory.
+/etc/initlog.conf	This is the initlog configuration file.
+/etc/inittab		This is the main init configuration file.
+/etc/modules		This is where the kernel loads modules from at boot.
+/etc/ppp/ip-down	This is a script for dialup internet connections.
+/etc/ppp/ip-up		This is a script for dialup internet connections.
+/etc/profile.d/inputrc.csh	Shell Key bindings for csh and tcsh.
+/etc/profile.d/inputrc.sh	Shell Key bindings for sh and bash.
+/etc/profile.d/lang.csh		Language files - i18n stuff for csh and tcsh.
+/etc/profile.d/lang.sh		Language files - i18n stuff for sh and bash.
+/etc/profile.d/tmpdir.csh	Set temporary directory for csh and tcsh.
+/etc/profile.d/tmpdir.sh	Set temporary directory for sh and bash.
+/etc/rc.d/init.d/functions	Functions for scripts in init.d
+/etc/rc.d/init.d/halt		Runlevel 0 (shutdown/halt) script.
+/etc/rc.d/init.d/kheader	Script to regenerate the /boot/kernel.h file.
+/etc/rc.d/init.d/killall	Script to make sure everything is shut off.
+/etc/rc.d/init.d/mandrake_everytime	Mandrake specific stuff.
+/etc/rc.d/init.d/mandrake_firstime	Mandrake post install stuff.
+/etc/rc.d/init.d/netfs		Mounts network filesystems.
+/etc/rc.d/init.d/network	Bring up/down networking.
+/etc/rc.d/init.d/random		Script to help random number generation.
+/etc/rc.d/init.d/rawdevices	Device stuff for applications such as Oracle.
+/etc/rc.d/init.d/single		Single user script (runlevel 1)
+/etc/rc.d/init.d/sound		Launch sound.
+/etc/rc.d/init.d/usb		Launch USB support.
+/etc/rc.d/rc.local		Boot time script, (like autoexec.bat in DOS).
+/etc/rc.d/rc.modules		Bootup script for modules.
+/etc/rc.d/rc.sysinit		Main system startup script.
+/etc/rc.d/rc0.d/S00killall	Runlevel 0 killall script link.
+/etc/rc.d/rc0.d/S01halt		Runlevel 0 halt script link.
+/etc/rc.d/rc1.d/S00single	Runlevel 1 single script link.
+/etc/rc.d/rc2.d/S99local	Runlevel 2 local script link. (rc.local)
+/etc/rc.d/rc3.d/S99local	Runlevel 3 local script link. (rc.local)
+/etc/rc.d/rc4.d			Runlevel 4 directory.
+/etc/rc.d/rc5.d/S99local	Runlevel 5 local script link. (rc.local)
+/etc/rc.d/rc6.d/S00killall	Runlevel 6 killall script link.
+/etc/rc.d/rc6.d/S01reboot	Runlevel 6 reboot script link.
+/etc/rc.local			BSD init compatibilety file.... ?
+/etc/rc.sysinit			BSD init compatibilety file.... ?
+/etc/rc0.d			BSD init compatibilety directory.
+/etc/rc1.d			BSD init compatibilety directory.
+/etc/rc2.d			BSD init compatibilety directory.
+/etc/rc3.d			BSD init compatibilety directory.
+/etc/rc4.d			BSD init compatibilety directory.
+/etc/rc5.d			BSD init compatibilety directory.
+/etc/rc6.d			BSD init compatibilety directory.
+/etc/sysconfig/console		Directory for console stuff, like the keymap.
+/etc/sysconfig/init		Basic init boot configurations.
+/etc/sysconfig/network-scripts/ifcfg-lo		Network config for localhost.
+/etc/sysconfig/network-scripts/ifdown		Turning off interfaces script.
+/etc/sysconfig/network-scripts/ifdown-post	Post stuff for ifdown.
+/etc/sysconfig/network-scripts/ifdown-ppp	Turning off ppp.
+/etc/sysconfig/network-scripts/ifdown-sl	Turning off SLIP.
+/etc/sysconfig/network-scripts/ifup		Turning on interfaces script.
+/etc/sysconfig/network-scripts/ifup-aliases	Turning on alias interfaces.
+/etc/sysconfig/network-scripts/ifup-ipx		Turning on IPX.
+/etc/sysconfig/network-scripts/ifup-plip	Turning on PLIP.
+/etc/sysconfig/network-scripts/ifup-post	Post stuff for ifup.
+/etc/sysconfig/network-scripts/ifup-ppp		Turning on ppp.
+/etc/sysconfig/network-scripts/ifup-routes	Turning on routes.
+/etc/sysconfig/network-scripts/ifup-sl		Turning on SLIP.
+/etc/sysconfig/network-scripts/network-functions     Functions for the scripts.
+/etc/sysconfig/rawdevices	Raw device bindings.
+/etc/sysctl.conf		System Control configurations.
+/sbin/consoletype		This prints the console type.
+/sbin/getkey			Prints the key strokes....
+/sbin/ifdown			Application for the previous config files.
+/sbin/ifup			Application for the previous config files.
+/sbin/initlog			Logs msgs and events to the system logger.
+/sbin/installkernel		Installs a kernel (not for manual use).
+/sbin/minilogd			* Totally lacking documentation.
+/sbin/netreport			Reports changes of the network interface.
+/sbin/ppp-watch			Application used by ifup-ppp.
+/sbin/service			Can send commands to all services etc.
+/sbin/setsysfont		Sets the system font.
+/usr/bin/listhome		Lists the users home directorys.
+/usr/sbin/detectloader		Detect the current boot loader.
+/usr/sbin/supermount		Automatic mount/umount application.
+/usr/sbin/sys-unconfig		System reconfiguration tool.
+/usr/sbin/usernetctl		User Network interface control application.
+/var/log/wtmp			Previously logged in users entrys.
+/var/run/netreport		Directory for the netreport application.
+/var/run/utmp			Currently logged in users entrys.
+
+So what do you really need to know of all that ?
+
+Well, here's the simple basics of how it works and what you need to remember.
+
+The /etc/inittab is already explained.
+
+-------------------------------------------------------------------------------
+
+Here is how the runlevels works:
+
+The Runlevel can be one of 1 to 6 and the number means this:
+
+0 - halt
+1 - Single user mode
+2 - Multiuser, without NFS
+3 - Full multiuser mode
+4 - Unused
+5 - X11
+6 - reboot
+
+You change the runlevel with the `init` command, so say that you are
+int runlevel 3 and you wanna go to single user mode for some reason,
+then you can do: init 1
+In a single user mode you can only be one user, root.
+And in a single user enviorment you can't do networking and
+other tasks, the runlevel 1 is meant to be there for system maintenence.
+
+The two mostly used runlevels as default is 3 and 5.
+Mandrake and RedHat etc. uses Runlevel 5 as default, and so they
+start up with a GUI in X Windows.
+
+Typing init 0 will shut down the system, and typing runlevel 6 will
+reboot the system.
+
+-------------------------------------------------------------------------------
+
+What determes what the various runlevels actually start at boot time
+is what is in there respective directory:
+
+Runlevel 0: /etc/rc.d/rc0.d/
+Runlevel 1: /etc/rc.d/rc1.d/
+Runlevel 2: /etc/rc.d/rc2.d/
+Runlevel 3: /etc/rc.d/rc3.d/
+Runlevel 4: /etc/rc.d/rc4.d/
+Runlevel 5: /etc/rc.d/rc5.d/
+Runlevel 6: /etc/rc.d/rc6.d/
+
+-------------------------------------------------------------------------------
+
+So, here say that you wanna stop your web server from starting at boot time.
+The first thing you wanna do is to find out what runlevel you are in, that
+you do with the runlevel command like this:
+
+alien:~$ runlevel
+N 3
+alien:~$
+
+This means that you are in runlevel 3.
+So from here go to /etc/rc.d/rc3.d/ which is the directory for runlevel 3.
+
+alien:~$ cd /etc/rc.d/rc3.d/
+alien: /etc/rc.d/rc3.d/ $
+
+Here you find the file that starts the webserver (this file is usually
+called httpd with a character and a number infront of it (I'll explain the
+character and the numbers soon), so list the contents of the current
+directory and find it, or just do like this:
+
+alien: /etc/rc.d/rc3.d/ $ ls -l *httpd
+lrwxrwxrwx    1 root     root       15 Dec  5 06:14 S85httpd -> ../init.d/httpd
+alien: /etc/rc.d/rc3.d/ $
+
+This says that S85httpd is a link to /etc/rc.d/init.d/httpd
+(../init.d/ if you're standing in /etc/rc.d/init.d/ mean /etc/rc.d/init.d/)
+
+So just remove the link like this:
+
+alien: /etc/rc.d/rc3.d/ $ rm -f S85httpd
+alien: /etc/rc.d/rc3.d/ $
+
+And that's how you stop something from starting with the runlevel.
+
+-------------------------------------------------------------------------------
+
+Now, if you rather would have something more start with the runlevel
+at boot time you do like this:
+
+You make a simple script that starts what you wanna have started and
+put it in /etc/rc.d/init.d/.
+Say that your scripts name is "mystart", you are in runlevel 3 and you have
+made your script executable (chmod a+x mystart), and you have it
+in your own home directory, then you do like this:
+
+alien: ~$ cp mystart /etc/rc.d/init.d/
+alien: ~$ cd /etc/rc.d/rc3.d
+alien: /etc/rc.d/rc3.d/ $ ln -s ../init.d/mystart Z00mystart
+alien: /etc/rc.d/rc3.d/ $
+
+And that's all of that.
+
+So now, what does the Z00 in Z00mystart or S85 in S85httpd mean ?
+Well, as the system starts it will read file after file in it's runlevels
+directory in alphabetical order, so to get them to start in a preticular
+order, the link names are made to determen that order.
+So the later in the alphabet the first character is the later it will boot,
+and the same for for the number, the higher number the later it will start.
+
+So A00something will start before A01something
+And Z99something will start later then X99something and so on.
+
+To get something to start at boot time you can also add it as a command
+in the /etc/rc.d/rc.local (or for some systems /etc/rc.local) file.
+That file is meant to be used for single commands and not to start up
+major things like a server etc.
+
+Always try to load things with the actual runlevel which is the more correct
+way, rather then adding them to the rc.local file
+
+-------------------------------------------------------------------------------
+
+So what's the difference between the BSD init and the System V init ?
+The only thing that differs them that you need to rememer is that they
+store the startup scripts in different places.
+
+The startup scripts for the BSD init is mainly in the following places:
+
+/etc/rc0.d/
+/etc/rc1.d/
+/etc/rc2.d/
+/etc/rc3.d/
+/etc/rc4.d/
+/etc/rc5.d/
+/etc/rc6.d/
+/etc/rc.boot/
+/etc/rcS.d/
+/etc/init.d/
+
+While the Syst V init stores its scripts mainly in:
+
+/etc/rc.d/rc0.d/
+/etc/rc.d/rc1.d/
+/etc/rc.d/rc2.d/
+/etc/rc.d/rc3.d/
+/etc/rc.d/rc4.d/
+/etc/rc.d/rc5.d/
+/etc/rc.d/rc6.d/
+/etc/rc.d/init.d/
+
+In the BSD init the /etc/rc.boot/ and the /etc/rcS.d/ directorys
+are more or less substitutes for the rc.local file since you can
+put things in them that starts up at boot time...
+what you put in /etc/rcS.d/ will even start at single user mode,
+so be careful what you put there.
+
+So basically, the actual scripts goes in the init.d directory
+and you link them to the runlevel directory with a prefix to determen where
+in the bootup they should be loaded.
+
+-------------------------------------------------------------------------------
+
+Here is an example of how an init script can be made.
+Here I made a script that would start a daemon named "daemon"
+
+-------------------------------------------------------------------------------
+
+#!/bin/sh
+# example	Example init script that would load 'daemon'
+#
+# Version:	@(#) /etc/rc.d/inet.d/example 0.01 19-Feb-2001
+#
+# Author:	Billy (Alien), <alien@ktv.koping.se>
+#
+
+. /etc/rc.d/init.d/functions	
+
+function status() {
+  ps aux | grep daemon &&
+  echo "Daemon is running." ||
+  echo "Daemon is not running."
+}
+
+case "$1" in
+    start)
+    # Check if daemon is in our path.
+    if `which daemon` > /dev/null; then success || failure; fi
+    echo -n "Starting Daemon"
+	daemon
+    echo
+   ;;
+    stop)
+    # Check if daemon is in our path again.
+    if `which daemon` > /dev/null; then success || failure; fi
+    echo "Stopping Daemon"
+	killall -15 daemon
+   ;;
+    status)
+    echo "Status of Daemon:"
+	status
+   ;;
+    reload)
+    echo "Restarting Daemon."
+	killall -1 daemon
+   ;;
+    restart)
+    if `which echo` > /dev/null; then success || failure; fi
+    $0 stop
+    $0 start
+   ;;
+    *)
+    echo "Usage: $0 start|stop|restart|status"
+    exit 0
+esac
+
+-------------------------------------------------------------------------------
+
+A note is that the success and failure functions/commands come from
+the /etc/rc.d/init.d/functions file, which may not be present in all
+distributions of Linux, since it as far as I know only comes with
+RedHat and Mandrake.
+
+-------------------------------------------------------------------------------
+
+The inits main configuration file is the /etc/inittab file, here is where
+you set which runlevel you you wanna have, and how many consoles you want
+etc, so here we go:
+
+The line where you actually set the runlevel looks like this (here runlevel 3):
+
+id:3:initdefault:
+
+Most RedHat like systems have runlevel 3 or 5 as default, but if you don't
+have any networking, you may find it better to change to runlevel 2.
+
+Next in this file should be the system initialization.
+
+si::sysinit:/etc/rc.d/rc.sysinit
+
+This line tells the system the path to the rc.sysinit where it loads
+alot in the system, as system clock, sets the hostname, and
+performs a number of checks.
+
+Next in line is this:
+
+l0:0:wait:/etc/rc.d/rc 0
+l1:1:wait:/etc/rc.d/rc 1
+l2:2:wait:/etc/rc.d/rc 2
+l3:3:wait:/etc/rc.d/rc 3
+l4:4:wait:/etc/rc.d/rc 4
+l5:5:wait:/etc/rc.d/rc 5
+l6:6:wait:/etc/rc.d/rc 6
+
+This tells the system where to load the programs and daemons it should load
+for the runlevel it's in.
+Say that we are in runlevel 3 (Default) then it looks at this line:
+
+l3:3:wait:/etc/rc.d/rc 3
+
+And there after goes to load all what's in /etc/rc.d/rc3.d/
+(rc3.d or any rc?.d contains links to the real files or scripts
+that's located in /etc/rc.d/init.d, so if you wanna add something to
+your runlevel, just look how they have done it and do it in a similar fashion.
+and make sure to not start any network dependent application before the
+network starts and so on...)
+
+Then it comes some other various stuff as trap the Ctrl+Alt+Del etc.
+
+After this comes the tty's (Terminal Types), and there locations.
+
+1:2345:respawn:/sbin/mingetty tty1
+2:2345:respawn:/sbin/mingetty tty2
+3:2345:respawn:/sbin/mingetty tty3
+4:2345:respawn:/sbin/mingetty tty4
+5:2345:respawn:/sbin/mingetty tty5
+6:2345:respawn:/sbin/mingetty tty6
+
+If you wanna add some more you can add like this:
+
+8:2345:respawn:/sbin/mingetty tty8
+9:2345:respawn:/sbin/mingetty tty9
+10:2345:respawn:/sbin/mingetty tty10
+11:2345:respawn:/sbin/mingetty tty11
+
+And leav tty7 reserved for X-windows.
+
+Last in the file should only be some line about xdm and it's location,
+this is if you have xdm installed...
+
+-------------------------------------------------------------------------------
+
+And if you have read the tutorial to this point you shouldent need any real
+explanation of this script.
+
+If you still dont understand how the init scripts work, read the
+scripts in your system and try to understand them.
+And also read this section about the init and the init scripts again.
+Share This   Posted in Bash tutorial
+July 11th, 2007
+One Response to “8 - The Init and system scripts”
+Hani Says: 
+April 23rd, 2008 at 3:42 am
+It's probably worth noting that with RedHat FC8 the file name in the rc.d/ directory should start with the letter S (ie. the example of starting the file with the letter Z would not work)
